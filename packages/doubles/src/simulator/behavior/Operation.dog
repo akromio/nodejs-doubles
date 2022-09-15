@@ -1,0 +1,9 @@
+/**
+ * The operation to perform.
+ */
+export enum Operation
+  retur
+  raise
+  resolve
+  reject
+  call

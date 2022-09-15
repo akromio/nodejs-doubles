@@ -1,0 +1,22 @@
+use (
+  alias://expected
+  {interceptor, field} = ~
+)
+
+suite(__filename, proc()
+  suite("interceptor()", proc()
+    test("when called, an interceptor must be returned", proc()
+      # (1) act
+      const (
+        value = [1, 2, 3]
+        i = interceptor(value, length = field.returns(1))
+        out1 = i.length
+        out2 = i[2]
+      )
+
+      # (2) assessment
+      expected(out1).equalTo(1)
+      expected(out2).equalTo(value[2])
+    end)
+  end)
+end)

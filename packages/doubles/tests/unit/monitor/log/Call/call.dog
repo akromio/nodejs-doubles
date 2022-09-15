@@ -1,0 +1,120 @@
+use (
+  alias://expected
+  {monitor} = ~
+  ~/dist/cjs/monitor/Result
+)
+
+# Struct to use with the tests.
+struct TestStruct
+  pub var x = 1
+  pub fn returnNum() = num(timestamp())
+  pub proc raiseError() throw("my error")
+
+suite(__filename, proc()
+  teardown(proc()
+    monitor.clearAll()
+  end)
+
+  test("when only one call, call and getCall(0) must return the same", proc()
+    # (1) act
+    const (
+      target = TestStruct()
+      p = monitor(target)
+    )
+
+    expected(p.returnNum()).toBeNum()
+
+    # (2) assessment
+    const log = monitor.log(p)
+    expected(log)\
+      .toHaveLen(2)\
+      .member("accesses").equalTo(1)\
+      .member("calls").equalTo(1)\
+      .member("returns").equalTo(2)
+    
+    const call = log.getCall(0)
+    expected(log.call).sameAs(call).toBe("Call").toHave(
+      result = Result.returned
+      args = []
+    ).member("value").toBeNum()
+  end)
+
+  test("when not onlyCalls and no error raised, log must be updated and value returned", proc()
+    # (1) act
+    const (
+      target = TestStruct()
+      p = monitor(target)
+    )
+
+    expected(p.returnNum()).toBeNum()
+    expected(p.returnNum()).toBeNum()
+
+    # (2) assessment
+    const log = monitor.log(p)
+
+    expected(log)\
+      .toHaveLen(4)\
+      .member("accesses").equalTo(2)\
+      .member("calls").equalTo(2)\
+      .member("returns").equalTo(4)
+
+    for each i in [0, 1] do
+      expected(log.getCall(i)).toBe("Call").toHave(
+        result = Result.returned
+        args = []
+      ).member("value").toBeNum()
+  end)
+
+  test("when onlyCalls and returning and raising, log must be updated returning and raising", proc()
+    # (1) act
+    const (
+      target = TestStruct()
+      p = monitor(target, onlyCalls = true)
+    )
+
+    expected(p.returnNum()).toBeNum()
+    expected(proc() p.raiseError() end).toRaise()
+
+    # (2) assessment
+    const log = monitor.log(p)
+
+    expected(log)\
+      .toHaveLen(2)\
+      .member("calls").equalTo(2)\
+      .member("returns").equalTo(1)\
+      .member("raises").equalTo(1)
+
+    expected(log.getCall(0)).toBe("Call").toHave(
+      result = Result.returned
+      args = []
+    ).member("value").toBeNum()
+
+    expected(log.getCall(1)).toBe("Call").toHave(
+      result = Result.raised
+      args = []
+    ).member("value").equalTo("my error")
+  end)
+
+  test("when calledWith() used, times called with the arguments must be returned", proc()
+    # (1) act
+    const (
+      target = fn(x, y) = x + y end
+      p = monitor(target)
+    )
+
+    expected(p(11, 22)).equalTo(33)
+    expected(p(11, 22)).equalTo(33)
+    expected(p(22, 33)).equalTo(55)
+
+    # (2) assessment
+    const log = monitor.log(p)
+    
+    expected(log).toHaveLen(3)
+    expected(log.calledWith([11, 22])).equalTo(2)
+    expected(log.calledWith([22])).equalTo(0)
+    expected(log.calledWith([22, 33])).equalTo(1)
+    expected(log.returnedValue(33)).equalTo(2)
+    expected(log.returnedValue(55)).equalTo(1)
+    expected(log.returnedValue(66)).equalTo(0)
+  end)
+end)

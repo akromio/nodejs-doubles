@@ -1,0 +1,22 @@
+use (
+  Operation
+)
+
+/**
+ * An object to represent a call response.
+ */
+export struct Response
+  /**
+   * The arguments associated to the call.
+   */
+  pub const args?: list
+
+  /**
+   * The value to return or to raise.
+   */
+  pub const value?
+
+  /**
+   * The operation to perform when this response selected.
+   */
+  pub const operation: Operation

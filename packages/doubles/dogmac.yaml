@@ -1,0 +1,5 @@
+uses:
+  expected:
+    js: "@akromio/expected"
+  isEqual:
+    js: "lodash.isequal"

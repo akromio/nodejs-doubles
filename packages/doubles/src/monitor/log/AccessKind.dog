@@ -1,0 +1,6 @@
+/**
+ * Kind of member access.
+ */
+export enum AccessKind
+  get
+  set

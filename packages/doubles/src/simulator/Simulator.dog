@@ -1,0 +1,47 @@
+use (
+  ../Double
+  behavior/{Behavior, Response, Operation}
+)
+
+/**
+ * A simulator, that is, an object to simulate other.
+ */
+export struct Simulator: Double
+  /**
+   * The behavior when the simulator called.
+   */
+  @hidden @inject
+  pub const callBehavior?
+
+  /**
+   * The members with their behaviors.
+   */
+  @hidden @inject
+  pub const members := {}
+
+  /**
+   * Process a call on the simulator.
+   */
+  pub fn processCall(args: list) -> result
+    if resp ::= callBehavior.getResponse(args) then
+      result = self.handleResponse(resp, args)
+    else
+      throw(Error("No response available for simulator."))
+
+  /**
+   * Process a read of a member.
+   */
+  pub fn processGet(member) -> result
+    if (result = members[member]) is Behavior then
+      result = self.handleResponse(result.getResponse([]))
+
+  /**
+   * Processes a call.
+   */
+  pub fn handleResponse(resp: Response, args?: list) -> result
+    with resp.operation do
+      if Operation.retur then result = resp.value
+      if Operation.raise then throw(resp.value)
+      if Operation.resolve then result = promise.resolve(resp.value)
+      if Operation.reject then result = promise.reject(resp.value)
+      if Operation.call then result = resp.value(...(args ?? []))

@@ -1,0 +1,14 @@
+use (
+  alias://expected
+  {simulator} = ~
+)
+
+suite(__filename, proc()
+  test("when stream.duplex() called, a duplex stream must be returned", proc()
+    # (1) act
+    const out = simulator.stream.duplex()
+
+    # (2) assessment
+    expected(out).toBeDuplexStream()
+  end)
+end)

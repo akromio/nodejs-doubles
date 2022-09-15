@@ -1,0 +1,5 @@
+/**
+ * A double, that is, an object to simulate another.
+ */
+@abstract
+export struct Double

@@ -1,0 +1,59 @@
+{
+  "name": "@akromio/doubles",
+  "version": "0.0.1",
+  "description": "Test doubles library.",
+  "homepage": "https://akromio.com",
+  "author": {
+    "name": "Sia Codelabs",
+    "email": "hello@siacodelabs.com",
+    "url": "https://siacodelabs.com"
+  },
+  "contributors": [
+    {
+      "name": "Raúl G. González",
+      "email": "raulggonzalez@siacodelabs.com"
+    }
+  ],
+  "publishConfig": {
+    "access": "public"
+  },
+  "keywords": [
+    "doubles",
+    "test"
+  ],
+  "bugs": {
+    "url": "https://github.com/akromio/doubles/issues",
+    "email": "bugs@akromio.com"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/akromio/doubles.git"
+  },
+  "preferGlobal": false,
+  "type": "commonjs",
+  "main": "dist/cjs/index.js",
+  "types": "dist/cjs/index.d.ts",
+  "files": [
+    "dist/"
+  ],
+  "engines": {
+    "node": ">= 16",
+    "npm": ">= 8"
+  },
+  "dependencies": {
+    "@dogmalang/core": "^1.0.0-rc18.0",
+    "lodash.isequal": "^4.5.0",
+    "uuid": "^9.0.0"
+  },
+  "devDependencies": {
+    "@akromio/expected": "^0.2.0"
+  },
+  "scripts": {
+    "lint": "dogmac check src tests && tsc src/index.d.ts",
+    "build": "npm run build/src",
+    "build/src": "rm -rf dist/ && dogmac js -o dist/cjs src && babel -d dist dist && cp src/*.d.ts dist/cjs/",
+    "test": "npm run test/build && mocha --config .mocharc.yaml",
+    "test/build": "rm -rf ./__tests__ && dogmac js -o __tests__ tests && babel -d __tests__ __tests__",
+    "cov": "c8 mocha --config .mocharc.yaml"
+  }
+}

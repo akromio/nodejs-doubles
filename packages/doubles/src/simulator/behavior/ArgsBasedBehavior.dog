@@ -1,0 +1,18 @@
+use (
+  alias://isEqual
+  Behavior
+)
+
+/**
+ * A behavior based in the arguments passed to the object.
+ * The default behavior used when arguments not found.
+ */
+export struct ArgsBasedBehavior: Behavior
+  @override
+  pub fn getResponse(args: list) -> resp
+    for each r in self.responses do
+      if isEqual(args, r.args) then
+        resp = r
+        break
+
+    resp ?= self.defaultResponse

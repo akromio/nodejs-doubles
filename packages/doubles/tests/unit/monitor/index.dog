@@ -1,0 +1,94 @@
+use (
+  alias://expected
+  {monitor} = ~
+)
+
+suite(__filename, proc()
+  suite("monitor()", proc()
+    teardown(proc()
+      monitor.clearAll()
+    end)
+
+    test("when monitor created, monitors must contain monitor info", proc()
+      # (1) act
+      const (
+        target = {}
+        out = monitor(target)
+      )
+
+      # (2) assessment
+      expected(out).notSameAs(target)
+      expected(monitor.monitors).toHaveLen(1).get("[0].proxy").sameAs(out)
+    end)
+
+    test("when method option set, this must be pushed to methods", proc()
+      # (1) act
+      const p = monitor({}, method = "methodName")
+
+      # (2) assessment
+      expected(monitor.monitors[0].monitor.members).equalTo(["methodName"])
+    end)
+  end)
+
+  suite("monitor.log()", proc()
+    teardown(proc()
+      monitor.clearAll()
+    end)
+
+    test("when proxy not saved, nil must be returned", proc()
+      # (1) act
+      monitor({})
+
+      # (2) assessment
+      expected(monitor.log(proxy({}, {}))).toBeNil()
+    end)
+
+    test("when proxy saved, log must be returned", proc()
+      # (1) act
+      const (
+        m = monitor({})
+        out = monitor.log(m)
+      )
+
+      # (2) assessment
+      expected(out).toBe("Log")
+      expected(monitor.monitors).notToBeEmpty()
+    end)
+
+    test("when proxy saved and clear options, log must be returned and clear run", proc()
+      # (1) act
+      const (
+        m = monitor({})
+        out = monitor.log(m, clear = true)
+      )
+
+      # (2) assessment
+      expected(out).toBe("Log")
+      expected(monitor.monitors).toBeEmpty()
+    end)
+  end)
+
+  suite("monitor.clear()", proc()
+    teardown(proc()
+      monitor.clearAll()
+    end)
+
+    test("when proxy saved, clear must be performed", proc()
+      # (1) act
+      const m = monitor({})
+      monitor.clear(m)
+
+      # (2) assessment
+      expected(monitor.monitors).toBeEmpty()
+    end)
+
+    test("when proxy not saved, no clear performed and mustn't be raised error", proc()
+      # (1) act
+      const m = monitor({})
+      monitor.clear(proxy({}, {}))
+
+      # (2) assessment
+      expected(monitor.monitors).toHaveLen(1).get("[0].proxy").sameAs(m)
+    end)
+  end)
+end)

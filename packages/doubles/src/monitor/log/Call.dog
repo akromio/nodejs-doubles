@@ -1,0 +1,21 @@
+use (
+  alias://isEqual
+  Entry
+)
+
+/**
+ * A function call.
+ */
+export struct Call: Entry
+  /**
+   * The arguments passed to the function in the call.
+   */
+  pub const args: list
+
+  /**
+   * Check whether the [args] are passed to the call.
+   */
+  pub fn calledWith(args: list) -> yep: bool
+    if len(self.args) == len(args) then
+      for i = 0; i < len(self.args); i += 1 do
+        if not (yep = isEqual(self.args[i], args[i]) )then break

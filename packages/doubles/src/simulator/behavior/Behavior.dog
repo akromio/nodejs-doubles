@@ -1,0 +1,60 @@
+use (
+  Response
+  Operation
+)
+
+/**
+ * A behavior to simulate.
+ */
+@abstract
+export struct Behavior
+  /**
+   * The response to use when no other can be used.
+   */
+  @hidden
+  pub var defaultResponse?: Response
+
+  /**
+   * The given responses to use.
+   */
+  @hidden @strict
+  pub const responses = []
+
+  /**
+   * Add a new response.
+   */
+  pub fn addResponse(decl) -> self
+    # (1) create response
+    var value, operation
+
+    if "returns" in decl then
+      value = decl.returns
+      operation = Operation.retur
+    else if "raises" in decl then
+      value = decl.raises
+      operation = Operation.raise
+    else if "resolves" in decl then
+      value = decl.resolves
+      operation = Operation.resolve
+    else if "rejects" in decl then
+      value = decl.rejects
+      operation = Operation.reject
+    else if "invokes" in decl then
+      value = expect(decl.invokes, func)
+      operation = Operation.call
+    else
+      throw(TypeError("returns, raises, resolves or rejects must be set."))
+
+    const resp = Response(args = decl.args, value, operation)
+
+    # (2) add response
+    if "default" in decl then
+      self.defaultResponse = resp
+    else
+      self.responses.push(resp)
+
+  /**
+   * Returns the response for the given arguments.
+   */
+  @abstract
+  pub fn getResponse(args: list): Response

@@ -1,0 +1,128 @@
+use (
+  {Duplex} = dep://stream
+  Simulator
+  behavior/{Behavior, PositionBasedBehavior, ArgsBasedBehavior}
+  field
+  createMembers
+)
+
+/**
+ * Creates a dummy object.
+ */
+@overload
+export fn simulator(): any
+
+/**
+ * Creates an object simulator from its [members].
+ */
+@overload
+export fn simulator(members: map): any
+
+/**
+ * Creates an object simulator from its [members],
+ * setting a given type as type of the simulator.
+ */
+@overload
+export fn simulator(Type, members: map): any
+
+/**
+ * Creates an object simulator from its [members],
+ * setting the type passed.
+ */
+export fn simulator(...args) -> sim
+  with size ::= len(args) do
+    if 0 then
+      sim = createObjectSimulator({})
+
+    if 1 then
+      sim = createObjectSimulator(args[0])
+
+    if 2 then
+      const [Type, members] = args
+      sim = cast<Type>(createObjectSimulator(members))
+
+    else
+      throw(TypeError($"Invalid number of arguments, expected 0, 1 or 2. Got: ${size}."))
+
+/**
+ * Creates a function simulator from its [behavior] and [members].
+ * If no behavior, a procedure simulator is created.
+ */
+simulator.fun = simulator.method = fn(behavior?: (list | map), members?: map) = createFunctionSimulator(behavior, members) end
+simulator.fun.resolves = fn(value?) = createFunctionSimulator(resolves = value) end
+simulator.fun.rejects = fn(value?) = createFunctionSimulator(rejects = value) end
+simulator.fun.returns = fn(value?) = createFunctionSimulator(returns = value) end
+simulator.fun.raises = fn(value?) = createFunctionSimulator(raises = value) end
+
+/**
+ * Creates a field simulator from its [behavior].
+ */
+simulator.field = field
+
+/**
+ * Creates a duplex stream simulator.
+ */
+simulator.stream = {
+  duplex = fn()
+    return native(
+      "/* c8 ignore start */new Duplex({read() {}, write() {}})/* c8 ignore stop */"
+    )
+  end
+}
+
+/**
+ * Creates an object simulator, attending to the behavior [def]inition.
+ */
+fn createObjectSimulator(def: map)
+  const m = Simulator(members = createMembers(def))
+
+  return proxy({}, {
+    get = fn(_, member) = m.processGet(member) end
+  })
+
+/**
+ * Creates a function simulator, attending to the behavior [def]inition and its [members].
+ */
+fn createFunctionSimulator(def?: (list | map), members?: map)
+  # (1) prepare members if needed
+  if members then
+    members = createMembers(members)
+
+  # (2) create behavior
+  var behavior
+
+  if def is list then
+    # determine kind of behavior
+    var Behavior = PositionBasedBehavior
+
+    with len(def) do
+      if 0 then
+        nop
+
+      if 1 then
+        if "args" in def[0] and "i" not in def[0] then
+          Behavior = ArgsBasedBehavior
+          
+      else
+        if "i" not in (if "default" not in def[0] then def[0] else def[1] end) then
+          Behavior = ArgsBasedBehavior
+
+    behavior = Behavior()
+
+    # add responses to behavior
+    for each resp in def do
+      behavior.addResponse(resp)
+  else if def is map then
+    behavior = PositionBasedBehavior()
+    behavior.addResponse(def{*,default=true})
+  else
+    behavior = PositionBasedBehavior()
+    behavior.addResponse(default = true, returns = nil)
+
+  # (3) return simulator
+  const simulator = Simulator(callBehavior = behavior, members)
+
+  return proxy(nop, {
+    apply = fn(target, thisArg?, args) = simulator.processCall(args) end
+    get = fn(target, member, receiver) = simulator.processGet(member) end
+  })

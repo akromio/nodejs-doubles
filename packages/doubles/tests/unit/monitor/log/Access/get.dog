@@ -1,0 +1,99 @@
+use (
+  alias://expected
+  {monitor} = ~
+  ~/dist/cjs/monitor/Result
+  ~/dist/cjs/monitor/log/AccessKind
+)
+
+suite(__filename, proc()
+  teardown(proc()
+    monitor.clearAll()
+  end)
+
+  test("when no error raised, log must be updated and value returned", proc()
+    # (1) act
+    const (
+      target = {x = 11, y = 22}
+      p = monitor(target)
+    )
+
+    expected(p.x).equalTo(11)
+    expected(p.y).equalTo(22)
+    expected(p.z).toBeNil()
+
+    # (2) assessment
+    const log = monitor.log(p)
+
+    expected(log).toHaveLen(3)
+    expected(log.items).it(0).toHave(member = "x").it(1).toHave(member = "y").it(2).toHave(member = "z")
+    expected(log.returnedType(num)).equalTo(2)
+
+    expected(log.entry).toBe("Access").toHave(
+      value = 11
+      result = Result.returned
+      member = "x"
+      kind = AccessKind.get
+    )
+
+    expected(log.getEntry(0)).toBe("Access").toHave(
+      value = 11
+      result = Result.returned
+      member = "x"
+      kind = AccessKind.get
+    )
+
+    expected(log.getAccess(0)).toBe("Access").toHave(
+      value = 11
+      result = Result.returned
+      member = "x"
+      kind = AccessKind.get
+    )
+  end)
+
+  test("when error raised, log must be updated and the error raised", proc()
+    struct Point2D
+      pub const x
+      pub const y
+      pub fn z = throw("my error")
+
+
+    # (1) act
+    const (
+      target = Point2D(x = 11, y = 22)
+      p = monitor(target)
+    )
+
+    expected(p).toBe(Point2D)
+    expected(p.x).equalTo(11)
+    expected(p.y).equalTo(22)
+    expected(proc() p.z end).toRaise("my error")
+
+    # (2) assessment
+    const log = monitor.log(p)
+
+    expected(log).toHaveLen(3).member("accesses").equalTo(3)
+    expected(log.items).it(0).toHave(member = "x").it(1).toHave(member = "y").it(2).toHave(member = "z")
+    expected(log.returns).equalTo(2)
+    expected(log.raises).equalTo(1)
+    expected(log.raisedValue("my error")).equalTo(1)
+    expected(log.raisedType(text)).equalTo(1)
+  end)
+
+  test("when given fields, only these fields must be monitored", proc()
+    # (1) act
+    const (
+      target = {x = 11, y = 22, z = 33}
+      p = monitor(target, members = ["x", "z"])
+    )
+
+    expected(p.x).equalTo(11)
+    expected(p.y).equalTo(22)
+    expected(p.z).equalTo(33)
+
+    # (2) assessment
+    const log = monitor.log(p)
+    
+    expected(log).toHaveLen(2)
+    expected(log.items).it(0).toHave(member = "x").it(1).toHave(member = "z")
+  end)
+end)

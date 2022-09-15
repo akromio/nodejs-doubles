@@ -1,0 +1,148 @@
+use (
+  Monitor
+  Result
+  log/{Log, AccessKind}
+)
+
+/**
+ * The current monitors.
+ */
+const monitors = []
+
+/**
+ * Creates a monitor to supervise an [object].
+
+ * [opts] contains the options:
+ * - members, a list with the members to monitor. If not set, all monitored.
+ * - onlyCalls, true when only to monitor member functions.
+ * - methods, a list with the methods to monitor. If set, onlyCalls is true implicitly.
+ * - method, a string with the method to monitor. If set, onlyCalls is true implicitly.
+ */
+export fn monitor(object, opts?: map) = createMonitor(object, opts{*, -log})
+
+/**
+ * Create a monitor for [object].
+ */
+fn createMonitor(object, opts: map) -> p
+  # (1) create monitor
+  const members = copy(opts.members ?? opts.methods ?? [])
+  if opts.method then members.push(opts.method)
+
+  const m = Monitor(
+    target = object
+    log = opts.log ?? Log()
+    members
+  )
+
+  if ("methods" in opts or "method" in opts) and "members" not in opts and "onlyCalls" not in opts then
+    opts.onlyCalls = true
+
+  p = proxy(object, {
+    # monitor the calls.
+    apply = fn(target, thisArg?, args)
+      # (1) invoke call
+      var result, value
+
+      do
+        value = target.apply(thisArg, args)
+        result = Result.returned
+      catch e
+        value = e
+        result = Result.raised
+
+      # (2) save call
+      m.saveCall(target=, args, result, value)
+
+      # (3) return or throw
+      if result ==~ raised then throw(value)
+      return value
+    end
+
+    # monitor a read access to a member.
+    get = fn(target, member, receiver)
+      # (1) pre
+      if not m.hasToBeMonitorized(member) then
+        return target[member]
+
+      # (2) invoke property
+      var result, value
+
+      do
+        value = target[member]
+        result = Result.returned
+      catch e
+        value = e
+        result = Result.raised
+
+      # (3) save access
+      if not opts.onlyCalls then
+        m.saveAccess(target=, member, kind = AccessKind.get, result, value)
+
+      # (4) return or throw
+      if result ==~ raised then throw(value)
+      else if value is func then return createMonitor(value, log = m.log)
+      else return value
+    end
+
+    # monitor a write access to a member.
+    set = fn(target, member, value, receiver)
+      # (1) pre
+      if not m.hasToBeMonitorized(member) or opts.onlyCalls then
+        return target[member] = value
+
+      # (2) invoke property
+      var result
+
+      do
+        target[member] = value
+        result = Result.returned
+      catch e
+        value = e
+        result = Result.raised
+
+      # (3) save access
+      m.saveAccess(target=, member, kind = AccessKind.set, result, value)
+
+      # (4) return or throw
+      if result ==~ raised then throw(value)
+      else return value
+    end
+  })
+
+  # (2) save monitor
+  monitors.push(proxy = p, monitor = m)
+
+/**
+ * The current monitors.
+ */
+Object.defineProperty(monitor, "monitors", {
+  enumerable = false
+  get = fn() = monitors end
+})
+
+/**
+ * Removes all the monitors.
+ */
+monitor.clearAll = proc()
+  monitors.splice(0)
+end
+
+/**
+ * Removes a monitor.
+ */
+monitor.clear = fn(p) -> deleted: bool
+  if i ::= monitors.findIndex(fn(i) = i.proxy === p end); i >= 0 then
+    monitors.splice(i, 1)
+    deleted = true
+end
+
+/**
+ * Returns the log for a monitor.
+ */
+monitor.log = fn(p, opts?:> {clear: bool}) -> log
+  for each item in monitors do
+    if item.proxy === p then
+      log = item.monitor.log
+      if clear then monitor.clear(p)
+      break
+end

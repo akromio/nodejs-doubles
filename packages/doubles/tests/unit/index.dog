@@ -1,0 +1,16 @@
+use (
+  alias://expected
+  pkg = ~
+)
+
+suite(__filename, proc()
+  test("when package imported, api must be exported", proc()
+    expected(pkg).toHave(
+      "field"
+      "fun"
+      "method"
+      "monitor"
+      "simulator"
+    )
+  end)
+end)

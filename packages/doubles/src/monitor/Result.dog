@@ -1,0 +1,6 @@
+/**
+ * The result kind of an access or a call.
+ */
+export enum Result
+  returned
+  raised

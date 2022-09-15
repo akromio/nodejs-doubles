@@ -1,0 +1,38 @@
+use (
+  alias://expected
+  {simulator} = ~
+)
+
+const {field, fun} = simulator
+
+suite(__filename, proc()
+  test("when well-defined, object simulator must be returned", proc()
+    # (1) act
+    const o = simulator({
+      x = field([{returns = 1234}, {returns = 4321}])
+      y = fun({returns = 12345678})
+    })
+
+    # (2) assessment
+    expected(o).notToBeCallable()
+    expected(o.x).equalTo(1234)
+    expected(o.y()).equalTo(12345678)
+    expected(o.y()).equalTo(12345678)
+    expected(o.x).equalTo(4321)
+  end)
+
+  test("when object simulator called, JS-engine error must be raised", proc()
+    # (1) act
+    const o = simulator({})
+
+    # (2) assessment
+    expected(o).notToBeCallable()
+    expected(proc() o() end).toRaise(TypeError("o is not a function"))
+  end)
+
+  test("when field() or fun() not used for member, error must be raised", proc()
+    expected(proc()
+      simulator(x = "invalid value")
+    end).toRaise(TypeError("Member 'x' must be map, field simulator or function simulator."))
+  end)
+end)

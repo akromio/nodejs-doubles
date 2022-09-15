@@ -1,0 +1,40 @@
+use (
+  Interceptor
+  ../simulator/createMembers
+)
+
+/**
+ * Creates an interceptor for a given [object]
+ * and the indicated [members].
+ */
+export fn interceptor(object: any, members: map) = createObjectInterceptor(
+  object
+  members
+)
+
+/**
+ * Create an interceptor for a given [object]
+ * and the indicated [members].
+ *
+ * @dev
+ * This function returns a proxy for the object
+ * monitoring and intercepting the indicated methods.
+ */
+fn createObjectInterceptor(object, members: map)
+   # (1) create interceptor
+  const i = Interceptor(
+    members = createMembers(members)
+  )
+
+  # (2) create interceptor proxy
+  return proxy(
+    object
+
+    # monitor a read access to a member.
+    get = fn(_, member) -> result
+      if i.hasToIntercept(member) then
+        result = i.processGet(member)
+      else
+        result = object[member]
+    end
+  )

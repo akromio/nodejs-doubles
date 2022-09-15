@@ -1,0 +1,11 @@
+ui: tdd
+timeout: 2000
+
+extension:
+  - js
+
+spec:
+  - __tests__/**/*.js
+  
+ignore:
+  - "**/*/__init__.js"

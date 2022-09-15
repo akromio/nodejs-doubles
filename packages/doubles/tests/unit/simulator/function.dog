@@ -1,0 +1,116 @@
+use (
+  alias://expected
+  {simulator} = ~
+)
+
+suite(__filename, proc()
+  suite("position-based simulator", proc()
+    test("when empty simulator, no response available and error must be raised", proc()
+      # (1) act
+      const (
+        p = simulator.fun([])
+        out = peval(p())
+      )
+
+      # (2) assessment
+      expected(out)\
+        .it(0).equalTo(false)\
+        .it(1).equalTo(Error("No response available for simulator."))
+    end)
+
+    test("when procedure simulator, the calls must return nil", proc()
+      # (1) act
+      const p = simulator.fun()
+
+      # (2) assessment
+      expected(p()).toBeNil()
+      expected(p()).toBeNil()
+    end)
+
+    test("when position-based simulator, position-based behavior must be used", proc()
+      # (1) act
+      const p = simulator.fun([
+        {default = true, returns = "the default value"},
+        {i = 0, returns = 111}
+        {raises = Error("my error")}
+        {returns = 222}
+      ])
+
+      # (2) assessment
+      expected(p).toBeCallable()
+      expected(p()).equalTo(111)
+      expected(proc() p() end).toRaise(Error("my error"))
+      expected(p()).equalTo(222)
+      expected(p()).equalTo("the default value")
+      expected(p()).equalTo("the default value")
+    end)
+
+    test("when position-based simulator using the first item, position-based behavior must be used", proc()
+      # (1) act
+      const p = simulator.fun([
+        {i = 0, returns = 111}
+        {raises = Error("my error")}
+        {returns = 222}
+      ])
+
+      # (2) assessment
+      expected(p).toBeCallable()
+      expected(p()).equalTo(111)
+      expected(proc() p() end).toRaise(Error("my error"))
+      expected(p()).equalTo(222)
+      expected(proc() p() end).toRaise(Error("No response available for simulator."))
+    end)
+  end)
+
+  suite("args-based simulator", proc()
+    test("when valid behavior, args-based behavior must be used", async proc()
+      # (1) act
+      const p = simulator.fun([
+        {default = true, invokes = fn(...args) = args.join(" ") end},
+        {args = [11, 22], returns = 1122}
+        {args = [22, 11], raises = Error("my error")}
+        {args = ["simple minds"], resolves = "promised you a miracle"}
+        {args = [], rejects = Error("rejected promise")}
+      ])
+
+      # (2) assessment
+      expected(p(11, 22)).equalTo(1122)
+      expected(proc() p(22, 11) end).toRaise(Error("my error"))
+      await(expected(p("simple minds"))).equalTo("promised you a miracle")
+      expected(pawait(p())).it(0).equalTo(false).it(1).equalTo(Error("rejected promise"))
+      expected(p(11, 22)).equalTo(1122)
+      expected(p("alive", "and", "kicking")).equalTo("alive and kicking")
+    end)
+
+    test("when not default call and needed in call, error must be raised", proc()
+      # (1) act
+      const p = simulator.fun([
+        {args = ["promised you a miracle"], returns = "simple minds"}
+      ])
+
+      # (2) assessment
+      expected(p("promised you a miracle")).equalTo("simple minds")
+      expected(proc() p("alive and kicking") end).toRaise(Error("No response available for simulator."))
+    end)
+  end)
+
+  suite("simulator base", proc()
+    test("when operation not passed, error must be raised", proc()
+      expected(proc()
+        simulator.fun([{}])
+      end).toRaise(TypeError("returns, raises, resolves or rejects must be set."))
+    end)
+
+    test("when simulating function with fields, fields can be accessed", proc()
+      # (1) act
+      const m = simulator.fun(
+        {returns = "Simple Minds - Waterfront"}
+        {x = simulator.field({returns = "Simple Minds - Live in the City of Light"})}
+      )
+
+      # (2) assessment
+      expected(m()).equalTo("Simple Minds - Waterfront")
+      expected(m.x).equalTo("Simple Minds - Live in the City of Light")
+    end)
+  end)
+end)

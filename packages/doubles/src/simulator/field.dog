@@ -1,0 +1,85 @@
+use (
+  {Duplex} = dep://stream
+  dep://uuid
+  behavior/PositionBasedBehavior
+)
+
+/**
+ * Creates a field simulator, attending to its [def]inition.
+ */
+export fn field(def: (list | map)) -> behavior
+  behavior = PositionBasedBehavior()
+
+  if def is list then
+    for each resp in def do
+      behavior.addResponse(resp)
+  else
+    behavior.addResponse(def{*,default=true})
+
+/**
+ * Creates and returns a field simulator to return
+ * a given [value].
+ */
+field.returns = fn(value?) -> behavior
+  behavior = PositionBasedBehavior()
+  behavior.addResponse(default = true, returns = value)
+end
+
+/**
+ * Creates a field that always returns a UUID v4.
+ */
+field.uuid = fn() -> behavior
+  behavior = PositionBasedBehavior()
+  behavior.addResponse(default = true, returns = uuid.v4())
+end
+
+/**
+ * Creates a field to return a given text.
+ */
+field.text = fn(returns: text) -> behavior
+  behavior = PositionBasedBehavior()
+  behavior.addResponse(default = true, returns)
+end
+
+/**
+ * Creates a field to return a boolean value.
+ */
+field.bool = fn(returns: bool) -> behavior
+  behavior = PositionBasedBehavior()
+  behavior.addResponse(default = true, returns)
+end
+
+/**
+ * Creates a field to return an empty array.
+ */
+field.list = fn(returns?: list) -> behavior
+  behavior = PositionBasedBehavior()
+  behavior.addResponse(default = true, returns = copy(returns) ?? [])
+end
+
+/**
+ * Creates a field to return an empty object.
+ */
+field.map = fn(returns?: map) -> behavior
+  behavior = PositionBasedBehavior()
+  behavior.addResponse(default = true, returns = copy(returns) ?? {})
+end
+
+/**
+ * Creates a field to return anything.
+ */
+field.any = fn(returns: any) -> behavior
+  behavior = PositionBasedBehavior()
+  behavior.addResponse(default = true, returns = copy(returns))
+end
+
+/**
+ * Creates a field to return a stream.
+ */
+field.stream = {
+  duplex = fn() 
+    return native(
+      "/* c8 ignore start */ new Duplex({read() {}, write() {}}) /* c8 ignore stop */"
+    )
+  end
+}

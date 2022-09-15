@@ -1,0 +1,144 @@
+use (
+  Access
+  Call
+)
+
+/**
+ * A log where the field accesses and the function calls are saved.
+ */
+export struct Log
+  /**
+   * The entries saved in the log.
+   */
+  @hidden @strict @inject
+  pub const items = []
+
+  /**
+   * The number of entries.
+   */
+  pub fn len = items.length
+
+  /**
+   * Returns the number of entries by type.
+   */
+  @hidden
+  pub fn getEntriesByType(Type) -> entries: list
+    for each i in items do
+      if i is Type then entries.push(i)
+
+  /**
+   * The number of calls.
+   */
+  pub fn calls = len(self.getEntriesByType(Call))
+
+  /**
+   * The number of field accesses.
+   */
+  pub fn accesses = len(self.getEntriesByType(Access))
+
+  /**
+   * The number of returns.
+   */
+  pub fn returns -> count: num
+    for each item in items do
+      if item.returned then count += 1
+
+  /**
+   * The number of raises.
+   */
+  pub fn raises -> count: num
+    for each item in items do
+      if item.raised then count += 1
+
+  /**
+   * Saves a function [call].
+   */
+  @hidden
+  pub proc saveCall(call)
+    items.push(Call(call))
+
+  /**
+   * Saves a field [access].
+   */
+  @hidden
+  pub proc saveAccess(access)
+    items.push(Access(access))
+
+  /**
+   * Returns the times returned a given [value].
+   */
+  pub fn returnedValue(value?) -> count: num
+    for each item in items do
+      if item.returnedValue(value) then count += 1
+
+  /**
+   * Return the times returned a value of a given [Type].
+   */
+  pub fn returnedType(Type) -> count: num
+    for each item in items do
+      if item.returnedType(Type) then count += 1
+
+  /**
+   * Returns the times raised a given [value].
+   */
+  pub fn raisedValue(value?) -> count: num
+    for each item in items do
+      if item.raisedValue(value) then count += 1
+
+  /**
+   * Returns the times raised a value of a given [Type].
+   */
+  pub fn raisedType(Type) -> count: num
+    for each item in items do
+      if item.raisedType(Type) then count += 1
+
+  /**
+   * Returns the times a call called with the given [args].
+   */
+  pub fn calledWith(args: list) -> count: num
+    for each item in items do
+      if item is Call and item.calledWith(args) then count += 1
+
+  /**
+   * Returns a given entry from its index/position.
+   */
+  pub fn getEntry(i: num) = items[i]
+  
+  /**
+   * Returns the first entry.
+   *
+   * This sugar is very useful when only one entry is possible.
+   */
+  pub fn entry = self.getEntry(0)
+
+  /**
+   * Returns an entry from its [Type] and [i]ndex.
+   */
+  @hidden
+  pub fn getEntryByType(Type, i: num) -> entry
+    var pos = 0
+
+    for each item in items do
+      if item is Type then
+        if pos == i then
+          entry = item
+          break
+        else
+          pos += 1
+
+  /**
+   * Returns a call from its [i]ndex.
+   */
+  pub fn getCall(i: num) = self.getEntryByType(Call, i)
+
+  /**
+   * Returns the first call.
+   *
+   * This sugar is very useful when only one entry is possible.
+   */
+  pub fn call = self.getCall(0)
+
+  /**
+   * Returns a field access from its [i]ndex.
+   */
+  pub fn getAccess(i: num) = self.getEntryByType(Access, i)

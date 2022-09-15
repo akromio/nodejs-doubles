@@ -1,0 +1,27 @@
+use (
+  Behavior
+)
+
+/**
+ * A behavior based in the position of the call.
+ * The default behavior used when the call under processing not set.
+ */
+export struct PositionBasedBehavior: Behavior
+  /**
+   * The current position.
+   */
+  @hidden @strict
+  pub var currentIndex = -1
+
+  /**
+   * All the calls were alright.
+   */
+  @hidden @strict
+  pub var validated = false
+
+  @override
+  pub fn getResponse(args: list) -> resp
+    if i ::= (self.currentIndex += 1); len(self.responses) > i then
+      resp = self.responses[i]
+    else
+      resp = self.defaultResponse

@@ -1,0 +1,48 @@
+use (
+  ../Result
+)
+
+/**
+ * A log entry.
+ */
+@abstract
+export struct Entry
+  /**
+   * The value returned or raised.
+   */
+  pub const value?
+
+  /**
+   * The result: return or raise.
+   */
+  pub const result: Result
+
+  /**
+   * Check whether the result is a return.
+   */
+  pub fn returned = self.result ==~ returned
+
+  /**
+   * Check whether the result is a raise.
+   */
+  pub fn raised = self.result ==~ raised
+
+  /**
+   * Check whether returned a given [value].
+   */
+  pub fn returnedValue(value?) = self.returned and self.value == value
+
+  /**
+   * Check whether returned a value of a given [Type].
+   */
+  pub fn returnedType(Type) = self.returned and self.value is Type
+
+  /**
+   * Check whether raised a given [value].
+   */
+  pub fn raisedValue(value?) = self.raised and self.value == value
+
+  /**
+   * Check whether raised a value of a given [Type].
+   */
+  pub fn raisedType(Type) = self.raised and self.value is Type

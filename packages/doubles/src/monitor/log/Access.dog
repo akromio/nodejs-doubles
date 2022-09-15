@@ -1,0 +1,29 @@
+use (
+  Entry
+  AccessKind
+)
+
+/**
+ * A member access.
+ */
+export struct Access: Entry
+  /**
+   * The member name.
+   */
+  pub const member
+
+  /**
+   * The kind of access.
+   */
+  @inject
+  pub const kind: AccessKind
+
+  /**
+   * Check whether the access is a get/read.
+   */
+  pub fn isGet() = kind ==~ get
+
+  /**
+   * Check whether the access is a set/update.
+   */
+  pub fn isSet() = kind ==~ set

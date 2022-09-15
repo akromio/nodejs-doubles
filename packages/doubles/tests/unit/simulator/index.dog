@@ -1,0 +1,110 @@
+use (
+  alias://expected
+  {simulator, fun, field} = ~
+)
+
+suite(__filename, proc()
+  suite("simulator()", proc()
+    test("when called w/o arguments, dummy object must be returned", proc()
+      # (1) act
+      const out = simulator()
+
+      # (2) assessment
+      expected(out).toBeMap()
+    end)
+
+    test("when called w/ members, members must be created", proc()
+      # (1) act
+      const out = simulator(id = field.uuid())
+
+      # (2) assessment
+      expected(out.id).toBeUuid()
+    end)
+
+    test("when called w/ type and members, double returned must be of that type", proc()
+      # (1) act
+      const out = simulator(Array, id = field.uuid())
+
+      # (2) assessment
+      expected(out).toBeList().member("id").toBeUuid()
+    end)
+
+    test("when called w/ three or more args, error must be raised", proc()
+      # (1) act
+      const out = peval(simulator("one", "two", "three"))
+
+      # (2) assessment
+      expected(out)\
+        .it(0).equalTo(false)\
+        .it(1).equalTo(TypeError("Invalid number of arguments, expected 0, 1 or 2. Got: 3."))
+    end)
+  end)
+
+  suite("fun()", proc()
+    test("when fun.returns(), a function returning the value must be returned", proc()
+      # (1) act
+      const (
+        value = 1234
+        f = fun.returns(value)
+        out1 = f()
+        out2 = f()
+      )
+
+      # (2) assessment
+      expected(out1).equalTo(value)
+      expected(out2).equalTo(value)
+    end)
+
+    test("when fun.raises(), a function raising error must be returned", proc()
+      # (1) act
+      const (
+        error = Error("The error message.")
+        f = fun.raises(error)
+        out1 = peval(f())
+        out2 = peval(f())
+      )
+
+      # (2) assessment
+      expected(out1).it(0).equalTo(false).it(1).equalTo(error)
+      expected(out2).it(0).equalTo(false).it(1).equalTo(error)
+    end)
+
+    test("when fun.resolves(), a function returning a resolved promise must be returned", async proc()
+      # (1) act
+      const (
+        value = 101
+        f = fun.resolves(value)
+        out1 = f()
+        out2 = f()
+      )
+
+      # (2) assessment
+      await(expected(out1)).toBeFulfilled().equalTo(value)
+      await(expected(out2)).toBeFulfilled().equalTo(value)
+    end)
+
+    test("when fun.rejects(), a function returning a rejected promise must be returned", async proc()
+      # (1) act
+      const (
+        error = Error("The message error")
+        f = fun.rejects(error)
+        out1 = f()
+        out2 = f()
+      )
+
+      # (2) assessment
+      await(expected(out1)).toBeRejected().equalTo(error)
+      await(expected(out2)).toBeRejected().equalTo(error)
+    end)
+  end)
+
+  suite("stream", proc()
+    test("when stream.duplex() called, a duplex stream must be returned", proc()
+      # (1) act
+      const out = simulator.stream.duplex()
+
+      # (2) assessment
+      expected(out).toBeDuplexStream()
+    end)
+  end)
+end)

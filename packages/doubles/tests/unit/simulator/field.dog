@@ -1,0 +1,143 @@
+use (
+  alias://expected
+  {simulator, field} = ~
+)
+
+suite(__filename, proc()
+  test("when field.uuid() used, a uuid must be returned", proc()
+    # (1) act
+    const out = simulator(fld = field.uuid())
+
+    # (2) assessment
+    expected(out).toBeMap().member("fld").toBeUuid()
+  end)
+
+  test("when field.text(), the passed value must be returned", proc()
+    # (1) act
+    const out = simulator(fld = field.text("ciao!"))
+
+    # (2) assessment
+    expected(out).toBeMap().member("fld").equalTo("ciao!")
+  end)
+
+  test("when field.bool(), the passed value must be returned", proc()
+    # (1) act
+    const out = simulator(fld = field.bool(true))
+
+    # (2) assessment
+    expected(out).toBeMap().member("fld").equalTo(true)
+  end)
+
+  test("when field.any(), passed value must be cloned and can be modified", proc()
+    # (1) act
+    const (
+      original = {}
+      out = simulator(fld = field.any(original))
+    )
+
+    out.fld.x = 11
+    out.fld.y = 22
+
+    # (2) assessment
+    expected(original).toBeEmpty()
+    expected(out).toBeMap().member("fld").toHave(x = 11, y = 22)
+  end)
+
+  suite("field.map()", proc()
+    test("when field doesn't receive object, new object must be created and it can be modified", proc()
+      # (1) act
+      const out = simulator(fld = field.map())
+      out.fld.x = 123
+      out.fld.y = 321
+
+      # (2) assessment
+      expected(out).toBeMap().member("fld").toHave(x = 123, y = 321)
+    end)
+
+    test("when field receives object, this must be cloned and its clone can be modified", proc()
+      # (1) act
+      const (
+        original = {}
+        out = simulator(fld = field.map(original))
+      )
+
+      out.fld.x = 123
+      out.fld.y = 321
+
+      # (2) assessment
+      expected(original).toBeEmpty()
+      expected(out).toBeMap().member("fld").toHave(x = 123, y = 321)
+    end)
+  end)
+
+  suite("field.list()", proc()
+    test("when list field doesn't receive list, new list must be created and it can be modified", proc()
+      # (1) act
+      const out = simulator(fld = field.list())
+      out.fld.push(123)
+      out.fld.push(321)
+
+      # (2) assessment
+      expected(out).toBeMap().member("fld").equalTo([123, 321])
+    end)
+
+    test("when list field receives list, this must be cloned and its clone can be modified", proc()
+      # (1) act
+      const (
+        original = [123, 456]
+        out = simulator(fld = field.list(original))
+      )
+
+      out.fld.push(789)
+
+      # (2) assessment
+      expected(original).equalTo([123, 456])
+      expected(out).toBeMap().member("fld").equalTo([123, 456, 789])
+    end)
+  end)
+
+  test("when field(invokes), the function must be invoked and its return must be returned", proc()
+    # (1) act
+    const (
+      obj = simulator(fld = field(invokes = fn() = 1234 end))
+      out = obj.fld
+    )
+
+    # (2) assessment
+    expected(out).equalTo(1234)
+  end)
+
+  suite("returns", proc()
+    test("when field.returns(), the indicated value must be returned", proc()
+    # (1) act
+      const (
+        obj = simulator(fld = field.returns(1234))
+        out = obj.fld
+      )
+
+      # (2) assessment
+      expected(out).equalTo(1234)
+    end)
+
+    test("when field(returns), the indicated value must be returned", proc()
+      # (1) act
+      const (
+        obj = simulator(fld = field(returns = 1234))
+        out = obj.fld
+      )
+
+      # (2) assessment
+      expected(out).equalTo(1234)
+    end)
+  end)
+
+  suite("stream", proc()
+    test("when stream.duplex(), a duplex stream must be returned", proc()
+      # (1) act
+      const out = field.stream.duplex()
+
+      # (2) assessment
+      expected(out).toBeDuplexStream()
+    end)
+  end)
+end)

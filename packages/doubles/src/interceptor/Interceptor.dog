@@ -1,0 +1,13 @@
+use (
+  ../simulator/Simulator
+)
+
+/**
+ * An interceptor, that is, an object to intercept
+ * and to respond to a given collection of members.
+ */
+export struct Interceptor: Simulator
+  /**
+   * Checks whether a member has to be intercepted.
+   */
+  pub fn hasToIntercept(name) = name is text and name in self.members 

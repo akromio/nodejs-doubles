@@ -1,0 +1,13 @@
+use (
+  behavior/Behavior
+)
+
+/**
+ * Creates an object with the members to simulate.
+ */
+export fn createMembers(def: map) -> members: map
+  for each name, value in def do
+    if value is not [Behavior, func, map] then
+      throw(TypeError($"Member '${name}' must be map, field simulator or function simulator."))
+
+    members[name] = value

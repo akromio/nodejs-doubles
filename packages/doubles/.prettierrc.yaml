@@ -1,0 +1,7 @@
+bracketSpacing: false
+semi: false
+printWidth: 95
+quoteProps: as-needed
+arrowParens: always
+endOfLine: lf
+trailingComma: none

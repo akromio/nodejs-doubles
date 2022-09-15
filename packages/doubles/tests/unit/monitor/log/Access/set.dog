@@ -1,0 +1,109 @@
+use (
+  alias://expected
+  {monitor} = ~
+  ~/dist/cjs/monitor/Result
+  ~/dist/cjs/monitor/log/AccessKind
+)
+
+suite(__filename, proc()
+  teardown(proc()
+    monitor.clearAll()
+  end)
+
+  test("when no error raised, log must be updated and value returned", proc()
+    const target = {x = 11, y = 22}
+
+    # (1) act
+    const p = monitor(target)
+    expected(p.x = 123).equalTo(123)
+    expected(p.x).equalTo(123)
+
+    # (2) assessment
+    const log = monitor.log(p)
+    expected(log).toHaveLen(2)
+    expected(log.items).it(0).toHave(member = "x").it(1).toHave(member = "x")
+    expected(log.returnedType(num)).equalTo(2)
+
+    var access = log.getEntry(0)
+    expected(access.isSet()).equalTo(true)
+    expected(access).toBe("Access").toHave(
+      value = 123
+      result = Result.returned
+      member = "x"
+      kind = AccessKind.set
+    )
+
+    access = log.getEntry(1)
+    expected(access.isGet()).equalTo(true)
+    expected(access).toBe("Access").toHave(
+      value = 123
+      result = Result.returned
+      member = "x"
+      kind = AccessKind.get
+    )
+  end)
+
+  test("when error raised, log must be updated and the error raised", proc()
+    struct Point2D
+      pub const x
+      pub const y
+      @hidden
+      pub var value = 33
+
+    const target = Point2D(x = 11, y = 22)
+    Object.defineProperty(target, "z", {
+      enumerable = true
+      get = fn() = target.value end
+      set = fn() = throw("my error") end
+    })
+
+    # (1) act
+    const p = monitor(target)
+    expected(p).toBe(Point2D)
+    expected(p.x).equalTo(11)
+    expected(p.y).equalTo(22)
+    expected(p.z).equalTo(33)
+    expected(proc() p.z = 123 end).toRaise("my error")
+
+    # (2) assessment
+    const log = monitor.log(p)
+    expected(log).toHaveLen(4).member("accesses").equalTo(4)
+    expected(log.items).it(0).toHave(member = "x").it(1).toHave(member = "y").it(2).toHave(member = "z").it(3).toHave(member = "z")
+    expected(log).member("returns").equalTo(3).member("raises").equalTo(1)
+    for each i in [0, 1, 2] do expected(log.getEntry(i).isGet()).equalTo(true)
+
+    const access = log.getEntry(3)
+    expected(access.isSet()).equalTo(true)
+    expected(access.raisedValue("my error")).equalTo(true)
+    expected(access.raisedType(text)).equalTo(true)
+  end)
+
+  test("when given fields, only these fields must be monitored", proc()
+    const target = {x = 1, y = 2, z = 3}
+
+    # (1) act
+    const p = monitor(target, members = ["x", "z"])
+    expected(p.x = 11).equalTo(11)
+    expected(p.y = 22).equalTo(22)
+    expected(p.z = 33).equalTo(33)
+
+    # (2) assessment
+    const log = monitor.log(p)
+    expected(log).toHaveLen(2)
+    expected(log.items).it(0).toHave(member = "x").it(1).toHave(member = "z")
+  end)
+
+  test("when onlyCalls, nothing must be monitored when set", proc()
+    const target = {x = 1, y = 2, z = 3}
+
+    # (1) act
+    const p = monitor(target, onlyCalls = true)
+    expected(p.x = 11).equalTo(11)
+    expected(p.y = 22).equalTo(22)
+    expected(p.z = 33).equalTo(33)
+
+    # (2) assessment
+    const log = monitor.log(p)
+    expected(log).toHaveLen(0)
+  end)
+end)
