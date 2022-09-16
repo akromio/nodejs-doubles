@@ -69,7 +69,17 @@ function createMonitor(object, opts) {
           let value;
 
           try {
-            value = target.apply(thisArg, args);
+            /*c8 ignore else*/
+            if (_core.dogma.is(target.apply, _core.func)) {
+              value = target.apply(thisArg, args);
+            }
+            /* c8 ignore start */
+            else {
+              value = target(...args);
+            }
+            /* c8 ignore stop */
+
+
             result = Result.returned;
           } catch (e) {
             value = e;
