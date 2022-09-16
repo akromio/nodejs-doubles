@@ -44,7 +44,12 @@ fn createMonitor(object, opts: map) -> p
       var result, value
 
       do
-        value = target.apply(thisArg, args)
+        #!cov ignore else
+        if target.apply is func then
+          value = target.apply(thisArg, args)
+        else
+          value = target(...args)
+
         result = Result.returned
       catch e
         value = e
