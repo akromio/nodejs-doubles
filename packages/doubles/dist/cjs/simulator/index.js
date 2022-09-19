@@ -112,6 +112,14 @@ simulator.fun.raises = value => {
   }
 };
 
+simulator.fun.invokes = fun => {
+  {
+    return createFunctionSimulator({
+      'invokes': fun
+    });
+  }
+};
+
 simulator.field = field;
 simulator.stream = {
   ["duplex"]: () => {

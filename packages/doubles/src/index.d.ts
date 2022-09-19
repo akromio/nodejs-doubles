@@ -46,6 +46,14 @@ declare module "@akromio/doubles" {
 
   namespace method {
     /**
+     * Creates and returns a simulator to return the value returned
+     * by a function.
+     *
+     * @param fun - Function to run for getting the value.
+     */
+    function invokes(fun: () => void): (...args: any[]) => any
+
+    /**
      * Creates and returns a simulator to return a given value.
      *
      * @param value - The value to return.

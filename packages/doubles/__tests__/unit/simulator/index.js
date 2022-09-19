@@ -49,6 +49,19 @@ suite(__filename, () => {
     });
     suite("fun()", () => {
       {
+        test("when fun.invokes(), a function returning the value must be returned", () => {
+          {
+            const f = fun.invokes(() => {
+              {
+                return (0, _core.timestamp)().valueOf();
+              }
+            });
+            const out1 = f();
+            const out2 = f();
+            expected(out1).toBeNum();
+            expected(out2).toBeNum();
+          }
+        });
         test("when fun.returns(), a function returning the value must be returned", () => {
           {
             const value = 1234;

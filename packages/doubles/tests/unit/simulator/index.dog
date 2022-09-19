@@ -41,6 +41,19 @@ suite(__filename, proc()
   end)
 
   suite("fun()", proc()
+    test("when fun.invokes(), a function returning the value must be returned", proc()
+      # (1) act
+      const (
+        f = fun.invokes(fn() = timestamp().valueOf() end)
+        out1 = f()
+        out2 = f()
+      )
+
+      # (2) assessment
+      expected(out1).toBeNum()
+      expected(out2).toBeNum()
+    end)
+
     test("when fun.returns(), a function returning the value must be returned", proc()
       # (1) act
       const (
