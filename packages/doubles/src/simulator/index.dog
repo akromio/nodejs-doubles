@@ -53,6 +53,7 @@ simulator.fun.resolves = fn(value?) = createFunctionSimulator(resolves = value) 
 simulator.fun.rejects = fn(value?) = createFunctionSimulator(rejects = value) end
 simulator.fun.returns = fn(value?) = createFunctionSimulator(returns = value) end
 simulator.fun.raises = fn(value?) = createFunctionSimulator(raises = value) end
+simulator.fun.invokes = fn(fun?) = createFunctionSimulator(invokes = fun) end
 
 /**
  * Creates a field simulator from its [behavior].
