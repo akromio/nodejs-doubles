@@ -37,15 +37,21 @@ jobs:
           git config --global user.email "${{ github.actor }}@users.noreply.github.com"
       
       - name: Install dependencies
-        run: npm ci && npm run bootstrap
+        run: npm ci -ws --include-workspace-root
       
       - name: Set version to publish
-        run: npm run version -- --yes --no-push ${{ env.version }}
+        run: npm version -ws --no-commit-hooks --no-git-tag-version --include-workspace-root ${{ env.version }}
       
       - name: Publish packages
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
-        run: npm run publish -- from-package --yes
+        run: npm publish -ws
       
       - name: Push changes
-        run: git push --force
+        run: |
+          version=$(npm pkg get version)
+          version=${version:1:-1}
+          git add .
+          git commit -m $version
+          git tag -a v$version -m $version
+          git push --force

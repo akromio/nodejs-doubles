@@ -10,12 +10,6 @@ _Product of Spain, made in Valencia by Sia Codelabs._
 npm run bootstrap
 ```
 
-When clean not wanted:
-
-```
-npm run update
-```
-
 ## Build
 
 ```
