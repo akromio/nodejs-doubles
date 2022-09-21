@@ -7,24 +7,4 @@ on:
 
 jobs:
   runTests:
-    name: Node.js ${{ matrix.node }} on ${{ matrix.os }}
-    runs-on: ${{ matrix.os }}
-
-    strategy:
-      matrix:
-        node: [16.x, 18.x]
-        os: [ubuntu-latest, windows-latest]
-
-    steps:
-      - uses: actions/checkout@v3
-
-      - name: Node.js ${{ matrix.node }}
-        uses: actions/setup-node@v3
-        with:
-          node-version: ${{ matrix.node }}
-      
-      - name: Install dependencies
-        run: npm ci -ws --include-workspace-root
-      
-      - name: Run tests
-        run: npm run cov
+    uses: akromio/github/.github/workflows/nodejs-unit-tests.yaml@master
