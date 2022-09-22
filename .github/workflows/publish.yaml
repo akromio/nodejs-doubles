@@ -11,7 +11,7 @@ on:
 
 jobs:
   publish:
-    uses: akromio/github/.github/workflows/publish-on-npm.yaml@master
+    uses: akromio/.github/.github/workflows/publish-on-npm.yaml@master
     with:
       release: ${{ inputs.release }}
     secrets:
