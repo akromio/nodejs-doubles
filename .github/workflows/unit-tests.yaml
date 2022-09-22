@@ -7,4 +7,4 @@ on:
 
 jobs:
   runTests:
-    uses: akromio/github/.github/workflows/nodejs-unit-tests.yaml@master
+    uses: akromio/.github/.github/workflows/nodejs-unit-tests.yaml@master
