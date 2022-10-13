@@ -8,12 +8,6 @@
     "email": "hello@siacodelabs.com",
     "url": "https://siacodelabs.com"
   },
-  "contributors": [
-    {
-      "name": "Raúl G. González",
-      "email": "raulggonzalez@siacodelabs.com"
-    }
-  ],
   "publishConfig": {
     "access": "public"
   },
