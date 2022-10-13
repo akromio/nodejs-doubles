@@ -16,12 +16,12 @@
     "test"
   ],
   "bugs": {
-    "url": "https://github.com/akromio/doubles/issues",
+    "url": "https://github.com/akromio/nodejs-doubles/issues",
     "email": "bugs@akromio.com"
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/akromio/doubles.git"
+    "url": "https://github.com/akromio/nodejs-doubles.git"
   },
   "preferGlobal": false,
   "type": "commonjs",
