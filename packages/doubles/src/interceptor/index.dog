@@ -20,21 +20,59 @@ export fn interceptor(object: any, members: map) = createObjectInterceptor(
  * This function returns a proxy for the object
  * monitoring and intercepting the indicated methods.
  */
-fn createObjectInterceptor(object, members: map)
-   # (1) create interceptor
-  const i = Interceptor(
-    members = createMembers(members)
+fn createObjectInterceptor(object, members: map) = createInterceptorProxy(
+  Interceptor(intercepted = object, members = createMembers(members))
+  members
+)
+
+/**
+ * Creates a proxy for a given interceptor.
+ */
+fn createInterceptorProxy(interceptor, members) = proxy(
+  interceptor.intercepted
+
+  # monitor a read access to a member.
+  get = fn(_, member) -> result
+    if interceptor.hasToIntercept(member) then
+      result = interceptor.processGet(member)
+    else
+      result = interceptor.intercepted[member]
+  end
+)
+
+/**
+ * The current module interceptors.
+ */
+interceptor.modules = {}
+
+/**
+ * Creates an interceptor for a given module by its [path]
+ * and the indicated [members].
+ *
+ * Returns the procedure for undoing the interception.
+ */
+interceptor.module = proc(path: text, members: map)
+  # (1) load the module if needed
+  if path not in require.cache then
+    require(path)
+  
+  # (3) create interceptor
+  const (
+    mod = require.cache[path]
+    inter = Interceptor(intercepted = mod.exports, members = createMembers(members))
+    interProxy = createInterceptorProxy(inter, members)
   )
 
-  # (2) create interceptor proxy
-  return proxy(
-    object
+  # (3) replace
+  require.cache[path] = mod{*, exports = interProxy}
+  interceptor.modules[path] = inter
+end
 
-    # monitor a read access to a member.
-    get = fn(_, member) -> result
-      if i.hasToIntercept(member) then
-        result = i.processGet(member)
-      else
-        result = object[member]
-    end
-  )
+/**
+ * Removes the interceptor for the given module by its [path].
+ */
+interceptor.clear = proc(path: text)
+  if inter ::= interceptor.modules[path] then
+    require.cache[path] = inter.intercepted
+    remove(path, interceptor.modules)
+end

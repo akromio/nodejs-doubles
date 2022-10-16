@@ -36,6 +36,22 @@ declare module "@akromio/doubles" {
    */
   export function interceptor(obj: any, members: any): typeof obj
 
+  namespace interceptor {
+    /**
+     * Creates an interceptor for a given module.
+     *
+     * @param module - Module name to intercept.
+     */
+    function module(name: string, members: any): void
+
+    /**
+     * Clears the interceptor for the given module.
+     *
+     * @param name - Module name intercepted.
+     */
+    function clear(name: string): void
+  }
+
   /**
    * Returns a method simulator.
    *

@@ -8,6 +8,11 @@ use (
  */
 export struct Interceptor: Simulator
   /**
+   * Intercepted object.
+   */
+  pub const intercepted
+
+  /**
    * Checks whether a member has to be intercepted.
    */
-  pub fn hasToIntercept(name) = name is text and name in self.members 
+  pub fn hasToIntercept(name) = name is text and name in self.members

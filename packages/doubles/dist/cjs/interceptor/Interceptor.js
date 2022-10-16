@@ -12,6 +12,12 @@ const $Interceptor = class Interceptor extends Simulator {
     if (_ == null) _ = {};
     /* c8 ignore stop */
 
+    (0, _core.expect)('intercepted', _['intercepted'], null);
+    Object.defineProperty(this, 'intercepted', {
+      value: (0, _core.coalesce)(_['intercepted'], null),
+      writable: false,
+      enumerable: true
+    });
     /* c8 ignore start */
 
     if (this._pvt_569315759c4f306b90867948a8bd3c13___init__ instanceof Function) this._pvt_569315759c4f306b90867948a8bd3c13___init__(_);
