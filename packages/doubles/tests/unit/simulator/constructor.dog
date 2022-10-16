@@ -1,0 +1,19 @@
+use (
+  alias://expected
+  {simulator} = ~
+)
+
+suite(__filename, proc()
+  const {constructor} = simulator
+
+  test("when called with new, construct must be called", proc()
+    # (1) act
+    const (
+      Band = constructor.returns(name = "Second")
+      out = native("new Band()")
+    )
+
+    # (2) assessment
+    expected(out).equalTo(name = "Second")
+  end)
+end)

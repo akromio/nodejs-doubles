@@ -54,6 +54,7 @@ interceptor.modules = {}
 interceptor.module = proc(path: text, members: map)
   # (1) load the module if needed
   const {cache} = require
+
   if path not in cache then
     require(path)
   

@@ -120,41 +120,10 @@ simulator.fun.invokes = fun => {
   }
 };
 
-simulator.constructor = (behavior, members) => {
-  /* c8 ignore next */
-  if (behavior != null) _core.dogma.expect("behavior", behavior, [_core.list, _core.map]);
-  /* c8 ignore next */
-
-  if (members != null) _core.dogma.expect("members", members, _core.map);
-  {
-    return createFunctionSimulator(behavior, members);
-  }
-};
-
-simulator.constructor.returns = value => {
-  {
-    return createFunctionSimulator({
-      'returns': value
-    });
-  }
-};
-
-simulator.constructor.raises = value => {
-  {
-    return createFunctionSimulator({
-      'raises': value
-    });
-  }
-};
-
-simulator.constructor.invokes = fun => {
-  {
-    return createFunctionSimulator({
-      'invokes': fun
-    });
-  }
-};
-
+simulator.constructor = simulator.fun;
+simulator.constructor.returns = simulator.fun.returns;
+simulator.constructor.raises = simulator.fun.raises;
+simulator.constructor.invokes = simulator.fun.invokes;
 simulator.field = field;
 simulator.stream = {
   ["duplex"]: () => {
@@ -266,7 +235,7 @@ function createFunctionSimulator(def, members) {
       });
     }
 
-    const simulator = Simulator({
+    const sim = Simulator({
       'callBehavior': behavior,
       'members': members
     });
@@ -280,7 +249,7 @@ function createFunctionSimulator(def, members) {
         _core.dogma.expect("args", args);
 
         {
-          return simulator.processCall(args);
+          return sim.processCall(args);
         }
       },
       ["apply"]: (_, thisArg, args) => {
@@ -292,7 +261,7 @@ function createFunctionSimulator(def, members) {
         _core.dogma.expect("args", args);
 
         {
-          return simulator.processCall(args);
+          return sim.processCall(args);
         }
       },
       ["get"]: (_, member, receiver) => {
@@ -308,7 +277,7 @@ function createFunctionSimulator(def, members) {
         _core.dogma.expect("receiver", receiver);
 
         {
-          return simulator.processGet(member);
+          return sim.processGet(member);
         }
       }
     });
