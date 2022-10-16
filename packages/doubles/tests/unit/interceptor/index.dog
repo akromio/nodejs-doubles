@@ -1,6 +1,6 @@
 use (
   alias://expected
-  {interceptor, field} = ~
+  {interceptor, field, fun, simulator} = ~
 )
 
 suite(__filename, proc()
@@ -17,6 +17,52 @@ suite(__filename, proc()
       # (2) assessment
       expected(out1).equalTo(1)
       expected(out2).equalTo(value[2])
+    end)
+  end)
+
+  suite("interceptor.module()", proc()
+    const shortUuidModulePath = require.resolve("short-uuid")
+
+    teardown(proc()
+      interceptor.clear(shortUuidModulePath)
+    end)
+
+    test("when module found, this must be replaced by interceptor proxy", proc()
+      # (1) arrange
+      use("short-uuid")
+
+      interceptor.module(
+        shortUuidModulePath
+        generate = fun.returns("Second - Rincón Exquisito")
+      )
+
+      # (2) act
+      const (
+        uuid = require("short-uuid")
+        out = uuid.generate()
+      )
+
+      # (3) assessment
+      expected(out).equalTo("Second - Rincón Exquisito")
+    end)
+
+    test("when module not found, this must be loaded and replaced by interceptor proxy", proc()
+      # (1) arrange
+      remove(shortUuidModulePath, require.cache)
+
+      interceptor.module(
+        shortUuidModulePath
+        generate = fun.returns("Second - Rincón Exquisito")
+      )
+
+      # (2) act
+      const (
+        uuid = require("short-uuid")
+        out = uuid.generate()
+      )
+
+      # (3) assessment
+      expected(out).equalTo("Second - Rincón Exquisito")
     end)
   end)
 end)

@@ -30,10 +30,23 @@ function createObjectInterceptor(object, members) {
   _core.dogma.expect("members", members, _core.map);
 
   {
-    const i = Interceptor({
+    return createInterceptorProxy(Interceptor({
+      'intercepted': object,
       'members': createMembers(members)
-    });
-    return (0, _core.proxy)(object, {
+    }), members);
+  }
+}
+
+function createInterceptorProxy(interceptor, members) {
+  /* c8 ignore next */
+  _core.dogma.expect("interceptor", interceptor);
+  /* c8 ignore next */
+
+
+  _core.dogma.expect("members", members);
+
+  {
+    return (0, _core.proxy)(interceptor.intercepted, {
       'get': (_, member) => {
         let result;
         /* c8 ignore next */
@@ -45,10 +58,10 @@ function createObjectInterceptor(object, members) {
         _core.dogma.expect("member", member);
 
         {
-          if (i.hasToIntercept(member)) {
-            result = i.processGet(member);
+          if (interceptor.hasToIntercept(member)) {
+            result = interceptor.processGet(member);
           } else {
-            result = _core.dogma.getItem(object, member);
+            result = _core.dogma.getItem(interceptor.intercepted, member);
           }
         }
         return result;
@@ -56,3 +69,54 @@ function createObjectInterceptor(object, members) {
     });
   }
 }
+
+interceptor.modules = {};
+
+interceptor.module = (path, members) => {
+  /* c8 ignore next */
+  _core.dogma.expect("path", path, _core.text);
+  /* c8 ignore next */
+
+
+  _core.dogma.expect("members", members, _core.map);
+
+  {
+    const {
+      cache
+    } = require;
+
+    if (!_core.dogma.includes(cache, path)) {
+      require(path);
+    }
+
+    const mod = _core.dogma.getItem(cache, path);
+
+    const inter = Interceptor({
+      'intercepted': mod.exports,
+      'members': createMembers(members)
+    });
+    const interProxy = createInterceptorProxy(inter, members);
+
+    _core.dogma.setItem("=", cache, path, _core.dogma.clone(mod, {
+      "exports": interProxy
+    }, {}, [], []));
+
+    _core.dogma.setItem("=", interceptor.modules, path, inter);
+  }
+};
+
+interceptor.clear = path => {
+  /* c8 ignore next */
+  _core.dogma.expect("path", path, _core.text);
+
+  {
+    {
+      const inter = _core.dogma.getItem(interceptor.modules, path);
+
+      if (inter) {
+        _core.dogma.getItem(require.cache, path).exports = inter.intercepted;
+        (0, _core.remove)(path, interceptor.modules);
+      }
+    }
+  }
+};

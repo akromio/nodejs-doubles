@@ -7,9 +7,10 @@ pub use (
   interceptor
 )
 
-const {fun, method, field} = simulator
+const {constructor, fun, method, field} = simulator
 
 pub (
+  constructor
   simulator
   fun
   method

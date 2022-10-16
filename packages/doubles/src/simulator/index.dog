@@ -56,6 +56,14 @@ simulator.fun.raises = fn(value?) = createFunctionSimulator(raises = value) end
 simulator.fun.invokes = fn(fun?) = createFunctionSimulator(invokes = fun) end
 
 /**
+ * Creates a constructor simulator from its [behaviour].
+ */
+simulator.constructor = simulator.fun
+simulator.constructor.returns = simulator.fun.returns
+simulator.constructor.raises = simulator.fun.raises
+simulator.constructor.invokes = simulator.fun.invokes
+
+/**
  * Creates a field simulator from its [behavior].
  */
 simulator.field = field
@@ -75,10 +83,10 @@ simulator.stream = {
  * Creates an object simulator, attending to the behavior [def]inition.
  */
 fn createObjectSimulator(def: map)
-  const m = Simulator(members = createMembers(def))
+  const sim = Simulator(members = createMembers(def))
 
   return proxy({}, {
-    get = fn(_, member) = m.processGet(member) end
+    get = fn(_, member) = sim.processGet(member) end
   })
 
 /**
@@ -121,9 +129,10 @@ fn createFunctionSimulator(def?: (list | map), members?: map)
     behavior.addResponse(default = true, returns = nil)
 
   # (3) return simulator
-  const simulator = Simulator(callBehavior = behavior, members)
+  const sim = Simulator(callBehavior = behavior, members)
 
   return proxy(nop, {
-    apply = fn(target, thisArg?, args) = simulator.processCall(args) end
-    get = fn(target, member, receiver) = simulator.processGet(member) end
+    construct = fn(_, args) = sim.processCall(args) end
+    apply = fn(_, thisArg?, args) = sim.processCall(args) end
+    get = fn(_, member, receiver) = sim.processGet(member) end
   })
