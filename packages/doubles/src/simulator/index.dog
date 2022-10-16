@@ -75,10 +75,10 @@ simulator.stream = {
  * Creates an object simulator, attending to the behavior [def]inition.
  */
 fn createObjectSimulator(def: map)
-  const m = Simulator(members = createMembers(def))
+  const sim = Simulator(members = createMembers(def))
 
   return proxy({}, {
-    get = fn(_, member) = m.processGet(member) end
+    get = fn(_, member) = sim.processGet(member) end
   })
 
 /**
@@ -124,6 +124,7 @@ fn createFunctionSimulator(def?: (list | map), members?: map)
   const simulator = Simulator(callBehavior = behavior, members)
 
   return proxy(nop, {
-    apply = fn(target, thisArg?, args) = simulator.processCall(args) end
-    get = fn(target, member, receiver) = simulator.processGet(member) end
+    construct = fn(_, args) = simulator.processCall(args) end
+    apply = fn(_, thisArg?, args) = simulator.processCall(args) end
+    get = fn(_, member, receiver) = simulator.processGet(member) end
   })

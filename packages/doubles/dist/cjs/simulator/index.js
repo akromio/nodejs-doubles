@@ -144,7 +144,7 @@ function createObjectSimulator(def) {
   _core.dogma.expect("def", def, _core.map);
 
   {
-    const m = Simulator({
+    const sim = Simulator({
       'members': createMembers(def)
     });
     return (0, _core.proxy)({}, {
@@ -157,7 +157,7 @@ function createObjectSimulator(def) {
         _core.dogma.expect("member", member);
 
         {
-          return m.processGet(member);
+          return sim.processGet(member);
         }
       }
     });
@@ -236,9 +236,9 @@ function createFunctionSimulator(def, members) {
       'members': members
     });
     return (0, _core.proxy)(_core.dogma.nop(), {
-      ["apply"]: (target, thisArg, args) => {
+      ["construct"]: (_, args) => {
         /* c8 ignore next */
-        _core.dogma.expect("target", target);
+        _core.dogma.expect("_", _);
         /* c8 ignore next */
 
 
@@ -248,9 +248,21 @@ function createFunctionSimulator(def, members) {
           return simulator.processCall(args);
         }
       },
-      ["get"]: (target, member, receiver) => {
+      ["apply"]: (_, thisArg, args) => {
         /* c8 ignore next */
-        _core.dogma.expect("target", target);
+        _core.dogma.expect("_", _);
+        /* c8 ignore next */
+
+
+        _core.dogma.expect("args", args);
+
+        {
+          return simulator.processCall(args);
+        }
+      },
+      ["get"]: (_, member, receiver) => {
+        /* c8 ignore next */
+        _core.dogma.expect("_", _);
         /* c8 ignore next */
 
 
