@@ -3,7 +3,7 @@
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.simulator = exports.monitor = exports.method = exports.interceptor = exports.fun = exports.field = void 0;
+exports.simulator = exports.monitor = exports.method = exports.interceptor = exports.fun = exports.field = exports.constructor = void 0;
 
 var _core = require("@dogmalang/core");
 
@@ -19,6 +19,7 @@ const interceptor = _core.dogma.use(require("./interceptor"));
 
 exports.interceptor = interceptor;
 const {
+  constructor,
   fun,
   method,
   field
@@ -26,3 +27,4 @@ const {
 exports.field = field;
 exports.method = method;
 exports.fun = fun;
+exports.constructor = constructor;

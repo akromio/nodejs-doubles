@@ -56,6 +56,14 @@ simulator.fun.raises = fn(value?) = createFunctionSimulator(raises = value) end
 simulator.fun.invokes = fn(fun?) = createFunctionSimulator(invokes = fun) end
 
 /**
+ * Creates a constructor simulator from its [behaviour].
+ */
+simulator.constructor = fn(behavior?: (list | map), members?: map) = createFunctionSimulator(behavior, members) end
+simulator.constructor.returns = fn(value?) = createFunctionSimulator(returns = value) end
+simulator.constructor.raises = fn(value?) = createFunctionSimulator(raises = value) end
+simulator.constructor.invokes = fn(fun?) = createFunctionSimulator(invokes = fun) end
+
+/**
  * Creates a field simulator from its [behavior].
  */
 simulator.field = field

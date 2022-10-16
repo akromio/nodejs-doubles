@@ -120,6 +120,41 @@ simulator.fun.invokes = fun => {
   }
 };
 
+simulator.constructor = (behavior, members) => {
+  /* c8 ignore next */
+  if (behavior != null) _core.dogma.expect("behavior", behavior, [_core.list, _core.map]);
+  /* c8 ignore next */
+
+  if (members != null) _core.dogma.expect("members", members, _core.map);
+  {
+    return createFunctionSimulator(behavior, members);
+  }
+};
+
+simulator.constructor.returns = value => {
+  {
+    return createFunctionSimulator({
+      'returns': value
+    });
+  }
+};
+
+simulator.constructor.raises = value => {
+  {
+    return createFunctionSimulator({
+      'raises': value
+    });
+  }
+};
+
+simulator.constructor.invokes = fun => {
+  {
+    return createFunctionSimulator({
+      'invokes': fun
+    });
+  }
+};
+
 simulator.field = field;
 simulator.stream = {
   ["duplex"]: () => {

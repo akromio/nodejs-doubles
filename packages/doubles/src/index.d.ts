@@ -53,6 +53,38 @@ declare module "@akromio/doubles" {
   }
 
   /**
+   * Returns a constructor simulator.
+   *
+   * @param responses - The responses to use.
+   * @returns The constructor simulator.
+   */
+  export function constructor(responses?: any): (...args: any[]) => void
+
+  namespace constructor {
+    /**
+     * Creates and returns a simulator to return the value returned
+     * by a function.
+     *
+     * @param fun - Function to run for getting the value.
+     */
+    function invokes(fun: () => void): (...args: any[]) => any
+
+    /**
+     * Creates and returns a simulator to return a given value.
+     *
+     * @param value - The value to return.
+     */
+    function returns(value?: any): (...args: any[]) => any
+
+    /**
+     * Creates and returns a simulator to raise a given value.
+     *
+     * @param value - The value to raise.
+     */
+    function raises(value?: any): (...args: any[]) => void
+  }
+
+  /**
    * Returns a method simulator.
    *
    * @param responses - The responses to use.
