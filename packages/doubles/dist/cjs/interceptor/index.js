@@ -81,11 +81,15 @@ interceptor.module = (path, members) => {
   _core.dogma.expect("members", members, _core.map);
 
   {
-    if (!_core.dogma.includes(require.cache, path)) {
+    const {
+      cache
+    } = require;
+
+    if (!_core.dogma.includes(cache, path)) {
       require(path);
     }
 
-    const mod = _core.dogma.getItem(require.cache, path);
+    const mod = _core.dogma.getItem(cache, path);
 
     const inter = Interceptor({
       'intercepted': mod.exports,
@@ -93,7 +97,7 @@ interceptor.module = (path, members) => {
     });
     const interProxy = createInterceptorProxy(inter, members);
 
-    _core.dogma.setItem("=", require.cache, path, _core.dogma.clone(mod, {
+    _core.dogma.setItem("=", cache, path, _core.dogma.clone(mod, {
       "exports": interProxy
     }, {}, [], []));
 
@@ -110,8 +114,7 @@ interceptor.clear = path => {
       const inter = _core.dogma.getItem(interceptor.modules, path);
 
       if (inter) {
-        _core.dogma.setItem("=", require.cache, path, inter.intercepted);
-
+        _core.dogma.getItem(require.cache, path).exports = inter.intercepted;
         (0, _core.remove)(path, interceptor.modules);
       }
     }

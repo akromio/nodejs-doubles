@@ -53,18 +53,19 @@ interceptor.modules = {}
  */
 interceptor.module = proc(path: text, members: map)
   # (1) load the module if needed
-  if path not in require.cache then
+  const {cache} = require
+  if path not in cache then
     require(path)
   
   # (3) create interceptor
   const (
-    mod = require.cache[path]
+    mod = cache[path]
     inter = Interceptor(intercepted = mod.exports, members = createMembers(members))
     interProxy = createInterceptorProxy(inter, members)
   )
 
   # (3) replace
-  require.cache[path] = mod{*, exports = interProxy}
+  cache[path] = mod{*, exports = interProxy}
   interceptor.modules[path] = inter
 end
 
@@ -73,6 +74,6 @@ end
  */
 interceptor.clear = proc(path: text)
   if inter ::= interceptor.modules[path] then
-    require.cache[path] = inter.intercepted
+    require.cache[path].exports = inter.intercepted
     remove(path, interceptor.modules)
 end
