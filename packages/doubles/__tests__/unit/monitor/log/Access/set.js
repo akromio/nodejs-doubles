@@ -1,17 +1,12 @@
 "use strict";
 
 var _core = require("@dogmalang/core");
-
 const expected = _core.dogma.use(require("@akromio/expected"));
-
 const {
   monitor
 } = _core.dogma.use(require("../../../../.."));
-
 const Result = _core.dogma.use(require("../../../../../dist/cjs/monitor/Result"));
-
 const AccessKind = _core.dogma.use(require("../../../../../dist/cjs/monitor/log/AccessKind"));
-
 suite(__filename, () => {
   {
     teardown(() => {
@@ -58,10 +53,8 @@ suite(__filename, () => {
       {
         const $Point2D = class Point2D {
           constructor(_) {
-            /* c8 ignore start */
-            if (_ == null) _ = {};
+            /* c8 ignore start */if (_ == null) _ = {};
             /* c8 ignore stop */
-
             (0, _core.expect)('x', _['x'], null);
             Object.defineProperty(this, 'x', {
               value: (0, _core.coalesce)(_['x'], null),
@@ -80,27 +73,18 @@ suite(__filename, () => {
               enumerable: false
             });
             /* c8 ignore start */
-
-            if (this._pvt_6c4d96819fa9f493324e73ab2a3c9316___init__ instanceof Function) this._pvt_6c4d96819fa9f493324e73ab2a3c9316___init__(_);
-            /* c8 ignore stop */
-
+            if (this._pvt_6c4d96819fa9f493324e73ab2a3c9316___init__ instanceof Function) this._pvt_6c4d96819fa9f493324e73ab2a3c9316___init__(_); /* c8 ignore stop */
             /* c8 ignore start */
-
-            if (this._pvt_6c4d96819fa9f493324e73ab2a3c9316___post__ instanceof Function) this._pvt_6c4d96819fa9f493324e73ab2a3c9316___post__();
-            /* c8 ignore stop */
-
+            if (this._pvt_6c4d96819fa9f493324e73ab2a3c9316___post__ instanceof Function) this._pvt_6c4d96819fa9f493324e73ab2a3c9316___post__(); /* c8 ignore stop */
             /* c8 ignore start */
-
-            if (this._pvt_6c4d96819fa9f493324e73ab2a3c9316___validate__ instanceof Function) this._pvt_6c4d96819fa9f493324e73ab2a3c9316___validate__();
-            /* c8 ignore stop */
+            if (this._pvt_6c4d96819fa9f493324e73ab2a3c9316___validate__ instanceof Function) this._pvt_6c4d96819fa9f493324e73ab2a3c9316___validate__(); /* c8 ignore stop */
           }
-
         };
+
         const Point2D = new Proxy($Point2D, {
           apply(receiver, self, args) {
             return new $Point2D(...args);
           }
-
         });
         const target = Point2D({
           'x': 11,
@@ -141,11 +125,9 @@ suite(__filename, () => {
           'member': "z"
         });
         expected(log).member("returns").equalTo(3).member("raises").equalTo(1);
-
         for (const i of [0, 1, 2]) {
           expected(log.getEntry(i).isGet()).equalTo(true);
         }
-
         const access = log.getEntry(3);
         expected(access.isSet()).equalTo(true);
         expected(access.raisedValue("my error")).equalTo(true);

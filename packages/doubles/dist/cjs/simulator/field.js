@@ -1,24 +1,16 @@
 "use strict";
 
 var _core = require("@dogmalang/core");
-
 const {
   Duplex
 } = _core.dogma.use(require("stream"));
-
 const uuid = _core.dogma.use(require("uuid"));
-
 const PositionBasedBehavior = _core.dogma.use(require("./behavior/PositionBasedBehavior"));
-
 function field(def) {
-  let behavior;
-  /* c8 ignore next */
-
+  let behavior; /* c8 ignore next */
   _core.dogma.expect("def", def, [_core.list, _core.map]);
-
   {
     behavior = PositionBasedBehavior();
-
     if (_core.dogma.is(def, _core.list)) {
       for (const resp of def) {
         behavior.addResponse(resp);
@@ -31,9 +23,7 @@ function field(def) {
   }
   return behavior;
 }
-
 module.exports = exports = field;
-
 field.returns = value => {
   let behavior;
   {
@@ -45,7 +35,6 @@ field.returns = value => {
   }
   return behavior;
 };
-
 field.uuid = () => {
   let behavior;
   {
@@ -57,13 +46,9 @@ field.uuid = () => {
   }
   return behavior;
 };
-
 field.text = returns => {
-  let behavior;
-  /* c8 ignore next */
-
+  let behavior; /* c8 ignore next */
   _core.dogma.expect("returns", returns, _core.text);
-
   {
     behavior = PositionBasedBehavior();
     behavior.addResponse({
@@ -73,13 +58,9 @@ field.text = returns => {
   }
   return behavior;
 };
-
 field.bool = returns => {
-  let behavior;
-  /* c8 ignore next */
-
+  let behavior; /* c8 ignore next */
   _core.dogma.expect("returns", returns, _core.bool);
-
   {
     behavior = PositionBasedBehavior();
     behavior.addResponse({
@@ -89,15 +70,11 @@ field.bool = returns => {
   }
   return behavior;
 };
-
 field.list = returns => {
-  let behavior;
-  /* c8 ignore next */
-
+  let behavior; /* c8 ignore next */
   if (returns != null) _core.dogma.expect("returns", returns, _core.list);
   {
     var _dogma$copy;
-
     behavior = PositionBasedBehavior();
     behavior.addResponse({
       'default': true,
@@ -106,15 +83,11 @@ field.list = returns => {
   }
   return behavior;
 };
-
 field.map = returns => {
-  let behavior;
-  /* c8 ignore next */
-
+  let behavior; /* c8 ignore next */
   if (returns != null) _core.dogma.expect("returns", returns, _core.map);
   {
     var _dogma$copy2;
-
     behavior = PositionBasedBehavior();
     behavior.addResponse({
       'default': true,
@@ -123,13 +96,9 @@ field.map = returns => {
   }
   return behavior;
 };
-
 field.any = returns => {
-  let behavior;
-  /* c8 ignore next */
-
+  let behavior; /* c8 ignore next */
   _core.dogma.expect("returns", returns, _core.any);
-
   {
     behavior = PositionBasedBehavior();
     behavior.addResponse({
@@ -139,20 +108,13 @@ field.any = returns => {
   }
   return behavior;
 };
-
 field.stream = {
   ["duplex"]: () => {
     {
-      return (
-        /* c8 ignore start */
-        new Duplex({
+      return (/* c8 ignore start */new Duplex({
           read() {},
-
           write() {}
-
-        })
-        /* c8 ignore stop */
-
+        }) /* c8 ignore stop */
       );
     }
   }

@@ -1,44 +1,30 @@
 "use strict";
 
 var _core = require("@dogmalang/core");
-
 const Access = _core.dogma.use(require("./Access"));
-
 const Call = _core.dogma.use(require("./Call"));
-
 const $Log = class Log {
   constructor(_) {
-    /* c8 ignore start */
-    if (_ == null) _ = {};
+    /* c8 ignore start */if (_ == null) _ = {};
     /* c8 ignore stop */
-
     Object.defineProperty(this, 'items', {
       value: [],
       writable: false,
       enumerable: false
     });
     /* c8 ignore start */
-
-    if (this._pvt_cb769d1323fb42de11b4fe6146d48364___init__ instanceof Function) this._pvt_cb769d1323fb42de11b4fe6146d48364___init__(_);
-    /* c8 ignore stop */
-
+    if (this._pvt_cb769d1323fb42de11b4fe6146d48364___init__ instanceof Function) this._pvt_cb769d1323fb42de11b4fe6146d48364___init__(_); /* c8 ignore stop */
     /* c8 ignore start */
-
-    if (this._pvt_cb769d1323fb42de11b4fe6146d48364___post__ instanceof Function) this._pvt_cb769d1323fb42de11b4fe6146d48364___post__();
-    /* c8 ignore stop */
-
+    if (this._pvt_cb769d1323fb42de11b4fe6146d48364___post__ instanceof Function) this._pvt_cb769d1323fb42de11b4fe6146d48364___post__(); /* c8 ignore stop */
     /* c8 ignore start */
-
-    if (this._pvt_cb769d1323fb42de11b4fe6146d48364___validate__ instanceof Function) this._pvt_cb769d1323fb42de11b4fe6146d48364___validate__();
-    /* c8 ignore stop */
+    if (this._pvt_cb769d1323fb42de11b4fe6146d48364___validate__ instanceof Function) this._pvt_cb769d1323fb42de11b4fe6146d48364___validate__(); /* c8 ignore stop */
   }
-
 };
+
 const Log = new Proxy($Log, {
   apply(receiver, self, args) {
     return new $Log(...args);
   }
-
 });
 module.exports = exports = Log;
 Object.defineProperty(Log.prototype, "len", {
@@ -53,17 +39,13 @@ Object.defineProperty(Log.prototype, "len", {
     }
   }
 });
-
 Log.prototype.getEntriesByType = function (Type) {
   const self = this;
   const {
     items
   } = self;
-  let entries = [];
-  /* c8 ignore next */
-
+  let entries = []; /* c8 ignore next */
   _core.dogma.expect("Type", Type);
-
   {
     for (const i of items) {
       if (_core.dogma.is(i, Type)) {
@@ -73,7 +55,6 @@ Log.prototype.getEntriesByType = function (Type) {
   }
   return entries;
 };
-
 Object.defineProperty(Log.prototype, "calls", {
   enum: true,
   get: function () {
@@ -134,35 +115,26 @@ Object.defineProperty(Log.prototype, "raises", {
     return count;
   }
 });
-
 Log.prototype.saveCall = function (call) {
   const self = this;
   const {
     items
-  } = self;
-  /* c8 ignore next */
-
+  } = self; /* c8 ignore next */
   _core.dogma.expect("call", call);
-
   {
     items.push(Call(call));
   }
 };
-
 Log.prototype.saveAccess = function (access) {
   const self = this;
   const {
     items
-  } = self;
-  /* c8 ignore next */
-
+  } = self; /* c8 ignore next */
   _core.dogma.expect("access", access);
-
   {
     items.push(Access(access));
   }
 };
-
 Log.prototype.returnedValue = function (value) {
   const self = this;
   const {
@@ -178,17 +150,13 @@ Log.prototype.returnedValue = function (value) {
   }
   return count;
 };
-
 Log.prototype.returnedType = function (Type) {
   const self = this;
   const {
     items
   } = self;
-  let count = 0;
-  /* c8 ignore next */
-
+  let count = 0; /* c8 ignore next */
   _core.dogma.expect("Type", Type);
-
   {
     for (const item of items) {
       if (item.returnedType(Type)) {
@@ -198,7 +166,6 @@ Log.prototype.returnedType = function (Type) {
   }
   return count;
 };
-
 Log.prototype.raisedValue = function (value) {
   const self = this;
   const {
@@ -214,17 +181,13 @@ Log.prototype.raisedValue = function (value) {
   }
   return count;
 };
-
 Log.prototype.raisedType = function (Type) {
   const self = this;
   const {
     items
   } = self;
-  let count = 0;
-  /* c8 ignore next */
-
+  let count = 0; /* c8 ignore next */
   _core.dogma.expect("Type", Type);
-
   {
     for (const item of items) {
       if (item.raisedType(Type)) {
@@ -234,17 +197,13 @@ Log.prototype.raisedType = function (Type) {
   }
   return count;
 };
-
 Log.prototype.calledWith = function (args) {
   const self = this;
   const {
     items
   } = self;
-  let count = 0;
-  /* c8 ignore next */
-
+  let count = 0; /* c8 ignore next */
   _core.dogma.expect("args", args, _core.list);
-
   {
     for (const item of items) {
       if (_core.dogma.is(item, Call) && item.calledWith(args)) {
@@ -254,21 +213,16 @@ Log.prototype.calledWith = function (args) {
   }
   return count;
 };
-
 Log.prototype.getEntry = function (i) {
   const self = this;
   const {
     items
-  } = self;
-  /* c8 ignore next */
-
+  } = self; /* c8 ignore next */
   _core.dogma.expect("i", i, _core.num);
-
   {
     return _core.dogma.getItem(items, i);
   }
 };
-
 Object.defineProperty(Log.prototype, "entry", {
   enum: true,
   get: function () {
@@ -281,24 +235,16 @@ Object.defineProperty(Log.prototype, "entry", {
     }
   }
 });
-
 Log.prototype.getEntryByType = function (Type, i) {
   const self = this;
   const {
     items
   } = self;
-  let entry;
-  /* c8 ignore next */
-
-  _core.dogma.expect("Type", Type);
-  /* c8 ignore next */
-
-
+  let entry; /* c8 ignore next */
+  _core.dogma.expect("Type", Type); /* c8 ignore next */
   _core.dogma.expect("i", i, _core.num);
-
   {
     let pos = 0;
-
     for (const item of items) {
       if (_core.dogma.is(item, Type)) {
         if (pos == i) {
@@ -312,21 +258,16 @@ Log.prototype.getEntryByType = function (Type, i) {
   }
   return entry;
 };
-
 Log.prototype.getCall = function (i) {
   const self = this;
   const {
     items
-  } = self;
-  /* c8 ignore next */
-
+  } = self; /* c8 ignore next */
   _core.dogma.expect("i", i, _core.num);
-
   {
     return this.getEntryByType(Call, i);
   }
 };
-
 Object.defineProperty(Log.prototype, "call", {
   enum: true,
   get: function () {
@@ -339,16 +280,12 @@ Object.defineProperty(Log.prototype, "call", {
     }
   }
 });
-
 Log.prototype.getAccess = function (i) {
   const self = this;
   const {
     items
-  } = self;
-  /* c8 ignore next */
-
+  } = self; /* c8 ignore next */
   _core.dogma.expect("i", i, _core.num);
-
   {
     return this.getEntryByType(Access, i);
   }

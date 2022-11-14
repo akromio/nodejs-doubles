@@ -1,17 +1,12 @@
 "use strict";
 
 var _core = require("@dogmalang/core");
-
 const expected = _core.dogma.use(require("@akromio/expected"));
-
 const {
   monitor
 } = _core.dogma.use(require("../../../../.."));
-
 const Result = _core.dogma.use(require("../../../../../dist/cjs/monitor/Result"));
-
 const AccessKind = _core.dogma.use(require("../../../../../dist/cjs/monitor/log/AccessKind"));
-
 suite(__filename, () => {
   {
     teardown(() => {
@@ -63,10 +58,8 @@ suite(__filename, () => {
       {
         const $Point2D = class Point2D {
           constructor(_) {
-            /* c8 ignore start */
-            if (_ == null) _ = {};
+            /* c8 ignore start */if (_ == null) _ = {};
             /* c8 ignore stop */
-
             (0, _core.expect)('x', _['x'], null);
             Object.defineProperty(this, 'x', {
               value: (0, _core.coalesce)(_['x'], null),
@@ -80,27 +73,18 @@ suite(__filename, () => {
               enumerable: true
             });
             /* c8 ignore start */
-
-            if (this._pvt_52d5593b2f467894987f16ab647e51d1___init__ instanceof Function) this._pvt_52d5593b2f467894987f16ab647e51d1___init__(_);
-            /* c8 ignore stop */
-
+            if (this._pvt_52d5593b2f467894987f16ab647e51d1___init__ instanceof Function) this._pvt_52d5593b2f467894987f16ab647e51d1___init__(_); /* c8 ignore stop */
             /* c8 ignore start */
-
-            if (this._pvt_52d5593b2f467894987f16ab647e51d1___post__ instanceof Function) this._pvt_52d5593b2f467894987f16ab647e51d1___post__();
-            /* c8 ignore stop */
-
+            if (this._pvt_52d5593b2f467894987f16ab647e51d1___post__ instanceof Function) this._pvt_52d5593b2f467894987f16ab647e51d1___post__(); /* c8 ignore stop */
             /* c8 ignore start */
-
-            if (this._pvt_52d5593b2f467894987f16ab647e51d1___validate__ instanceof Function) this._pvt_52d5593b2f467894987f16ab647e51d1___validate__();
-            /* c8 ignore stop */
+            if (this._pvt_52d5593b2f467894987f16ab647e51d1___validate__ instanceof Function) this._pvt_52d5593b2f467894987f16ab647e51d1___validate__(); /* c8 ignore stop */
           }
-
         };
+
         const Point2D = new Proxy($Point2D, {
           apply(receiver, self, args) {
             return new $Point2D(...args);
           }
-
         });
         Object.defineProperty(Point2D.prototype, "z", {
           enum: true,
