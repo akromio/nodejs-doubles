@@ -1,7 +1,6 @@
 "use strict";
 
 var _core = require("@dogmalang/core");
-
 class AccessKind {
   constructor(name, val) {
     Object.defineProperty(this, "name", {
@@ -13,15 +12,12 @@ class AccessKind {
       enum: true
     });
   }
+
   /* c8 ignore start */
-
-
   toString() {
     return this.name;
   }
   /* c8 ignore stop */
-
-
 }
 
 module.exports = exports = AccessKind;

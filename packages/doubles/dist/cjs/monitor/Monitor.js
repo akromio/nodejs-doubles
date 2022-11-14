@@ -1,19 +1,14 @@
 "use strict";
 
 var _core = require("@dogmalang/core");
-
 const Double = _core.dogma.use(require("../Double"));
-
 const Log = _core.dogma.use(require("./log/Log"));
-
 const $Monitor = class Monitor extends Double {
   constructor(_) {
     super(_);
     /* c8 ignore start */
-
     if (_ == null) _ = {};
     /* c8 ignore stop */
-
     (0, _core.expect)('log', _['log'], Log);
     Object.defineProperty(this, 'log', {
       value: (0, _core.coalesce)(_['log'], null),
@@ -38,45 +33,31 @@ const $Monitor = class Monitor extends Double {
       enumerable: true
     });
     /* c8 ignore start */
-
-    if (this._pvt_6d5d4d2373594d4f18d906d4ea54acf9___init__ instanceof Function) this._pvt_6d5d4d2373594d4f18d906d4ea54acf9___init__(_);
-    /* c8 ignore stop */
-
+    if (this._pvt_6d5d4d2373594d4f18d906d4ea54acf9___init__ instanceof Function) this._pvt_6d5d4d2373594d4f18d906d4ea54acf9___init__(_); /* c8 ignore stop */
     /* c8 ignore start */
-
-    if (this._pvt_6d5d4d2373594d4f18d906d4ea54acf9___post__ instanceof Function) this._pvt_6d5d4d2373594d4f18d906d4ea54acf9___post__();
-    /* c8 ignore stop */
-
+    if (this._pvt_6d5d4d2373594d4f18d906d4ea54acf9___post__ instanceof Function) this._pvt_6d5d4d2373594d4f18d906d4ea54acf9___post__(); /* c8 ignore stop */
     /* c8 ignore start */
-
-    if (this._pvt_6d5d4d2373594d4f18d906d4ea54acf9___validate__ instanceof Function) this._pvt_6d5d4d2373594d4f18d906d4ea54acf9___validate__();
-    /* c8 ignore stop */
+    if (this._pvt_6d5d4d2373594d4f18d906d4ea54acf9___validate__ instanceof Function) this._pvt_6d5d4d2373594d4f18d906d4ea54acf9___validate__(); /* c8 ignore stop */
   }
-
 };
+
 const Monitor = new Proxy($Monitor, {
   apply(receiver, self, args) {
     return new $Monitor(...args);
   }
-
 });
 module.exports = exports = Monitor;
-
 Monitor.prototype.hasToBeMonitorized = function (name) {
   const self = this;
   const {
     log,
     members
-  } = self;
-  /* c8 ignore next */
-
+  } = self; /* c8 ignore next */
   _core.dogma.expect("name", name, _core.text);
-
   {
     return (0, _core.len)(members) == 0 || _core.dogma.includes(members, name);
   }
 };
-
 Monitor.prototype.saveCall = function (...args) {
   const self = this;
   const {
@@ -88,7 +69,6 @@ Monitor.prototype.saveCall = function (...args) {
   }
   return this;
 };
-
 Monitor.prototype.saveAccess = function (...args) {
   const self = this;
   const {

@@ -1,13 +1,10 @@
 "use strict";
 
 var _core = require("@dogmalang/core");
-
 const expected = _core.dogma.use(require("@akromio/expected"));
-
 const {
   simulator
 } = _core.dogma.use(require("../../.."));
-
 suite(__filename, () => {
   {
     suite("position-based simulator", () => {
@@ -15,11 +12,9 @@ suite(__filename, () => {
         test("when empty simulator, no response available and error must be raised", () => {
           {
             const p = simulator.fun([]);
-
             const out = _core.dogma.peval(() => {
               return p();
             });
-
             expected(out).it(0).equalTo(false).it(1).equalTo(Error("No response available for simulator."));
           }
         });

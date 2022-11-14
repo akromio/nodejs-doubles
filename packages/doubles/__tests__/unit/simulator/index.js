@@ -1,15 +1,12 @@
 "use strict";
 
 var _core = require("@dogmalang/core");
-
 const expected = _core.dogma.use(require("@akromio/expected"));
-
 const {
   simulator,
   fun,
   field
 } = _core.dogma.use(require("../../.."));
-
 suite(__filename, () => {
   {
     suite("simulator()", () => {
@@ -41,7 +38,6 @@ suite(__filename, () => {
             const out = _core.dogma.peval(() => {
               return simulator("one", "two", "three");
             });
-
             expected(out).it(0).equalTo(false).it(1).equalTo(TypeError("Invalid number of arguments, expected 0, 1 or 2. Got: 3."));
           }
         });
@@ -76,15 +72,12 @@ suite(__filename, () => {
           {
             const error = Error("The error message.");
             const f = fun.raises(error);
-
             const out1 = _core.dogma.peval(() => {
               return f();
             });
-
             const out2 = _core.dogma.peval(() => {
               return f();
             });
-
             expected(out1).it(0).equalTo(false).it(1).equalTo(error);
             expected(out2).it(0).equalTo(false).it(1).equalTo(error);
           }

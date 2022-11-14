@@ -1,64 +1,46 @@
 "use strict";
 
 var _core = require("@dogmalang/core");
-
 const expected = _core.dogma.use(require("@akromio/expected"));
-
 const {
   monitor
 } = _core.dogma.use(require("../../../../.."));
-
 const Result = _core.dogma.use(require("../../../../../dist/cjs/monitor/Result"));
-
 const $TestStruct = class TestStruct {
   constructor(_) {
-    /* c8 ignore start */
-    if (_ == null) _ = {};
+    /* c8 ignore start */if (_ == null) _ = {};
     /* c8 ignore stop */
-
     Object.defineProperty(this, 'x', {
       value: (0, _core.coalesce)(_['x'], 1),
       writable: true,
       enumerable: true
     });
     /* c8 ignore start */
-
-    if (this._pvt_07adabf0d30c7d1fd60abe5716dabfa0___init__ instanceof Function) this._pvt_07adabf0d30c7d1fd60abe5716dabfa0___init__(_);
-    /* c8 ignore stop */
-
+    if (this._pvt_07adabf0d30c7d1fd60abe5716dabfa0___init__ instanceof Function) this._pvt_07adabf0d30c7d1fd60abe5716dabfa0___init__(_); /* c8 ignore stop */
     /* c8 ignore start */
-
-    if (this._pvt_07adabf0d30c7d1fd60abe5716dabfa0___post__ instanceof Function) this._pvt_07adabf0d30c7d1fd60abe5716dabfa0___post__();
-    /* c8 ignore stop */
-
+    if (this._pvt_07adabf0d30c7d1fd60abe5716dabfa0___post__ instanceof Function) this._pvt_07adabf0d30c7d1fd60abe5716dabfa0___post__(); /* c8 ignore stop */
     /* c8 ignore start */
-
-    if (this._pvt_07adabf0d30c7d1fd60abe5716dabfa0___validate__ instanceof Function) this._pvt_07adabf0d30c7d1fd60abe5716dabfa0___validate__();
-    /* c8 ignore stop */
+    if (this._pvt_07adabf0d30c7d1fd60abe5716dabfa0___validate__ instanceof Function) this._pvt_07adabf0d30c7d1fd60abe5716dabfa0___validate__(); /* c8 ignore stop */
   }
-
 };
+
 const TestStruct = new Proxy($TestStruct, {
   apply(receiver, self, args) {
     return new $TestStruct(...args);
   }
-
 });
-
 TestStruct.prototype.returnNum = function () {
   const self = this;
   {
     return (0, _core.num)((0, _core.timestamp)());
   }
 };
-
 TestStruct.prototype.raiseError = function () {
   const self = this;
   {
     _core.dogma.raise("my error");
   }
 };
-
 suite(__filename, () => {
   {
     teardown(() => {
@@ -88,7 +70,6 @@ suite(__filename, () => {
         expected(p.returnNum()).toBeNum();
         const log = monitor.log(p);
         expected(log).toHaveLen(4).member("accesses").equalTo(2).member("calls").equalTo(2).member("returns").equalTo(4);
-
         for (const i of [0, 1]) {
           expected(log.getCall(i)).toBe("Call").toHave({
             'result': Result.returned,
@@ -124,18 +105,12 @@ suite(__filename, () => {
     test("when calledWith() used, times called with the arguments must be returned", () => {
       {
         const target = (x, y) => {
-          /* c8 ignore next */
-          _core.dogma.expect("x", x);
-          /* c8 ignore next */
-
-
+          /* c8 ignore next */_core.dogma.expect("x", x); /* c8 ignore next */
           _core.dogma.expect("y", y);
-
           {
             return x + y;
           }
         };
-
         const p = monitor(target);
         expected(p(11, 22)).equalTo(33);
         expected(p(11, 22)).equalTo(33);
