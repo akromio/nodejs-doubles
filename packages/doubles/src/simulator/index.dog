@@ -49,11 +49,11 @@ export fn simulator(...args) -> sim
  * If no behavior, a procedure simulator is created.
  */
 simulator.fun = simulator.method = fn(behavior?: (list | map), members?: map) = createFunctionSimulator(behavior, members) end
-simulator.fun.resolves = fn(value?) = createFunctionSimulator(resolves = value) end
-simulator.fun.rejects = fn(value?) = createFunctionSimulator(rejects = value) end
-simulator.fun.returns = fn(value?) = createFunctionSimulator(returns = value) end
-simulator.fun.raises = fn(value?) = createFunctionSimulator(raises = value) end
-simulator.fun.invokes = fn(fun?) = createFunctionSimulator(invokes = fun) end
+simulator.fun.resolves = fn(value?) = createFunctionSimulator(resolves = value, default = true) end
+simulator.fun.rejects = fn(value?) = createFunctionSimulator(rejects = value, default = true) end
+simulator.fun.returns = fn(value?) = createFunctionSimulator(returns = value, default = true) end
+simulator.fun.raises = fn(value?) = createFunctionSimulator(raises = value, default = true) end
+simulator.fun.invokes = fn(fun?) = createFunctionSimulator(invokes = fun, default = true) end
 
 /**
  * Creates a constructor simulator from its [behaviour].
@@ -123,7 +123,8 @@ fn createFunctionSimulator(def?: (list | map), members?: map)
       behavior.addResponse(resp)
   else if def is map then
     behavior = PositionBasedBehavior()
-    behavior.addResponse(def{*,default=true})
+    if "default" not in def then def = def{*, default = true}
+    behavior.addResponse(def)
   else
     behavior = PositionBasedBehavior()
     behavior.addResponse(default = true, returns = nil)
