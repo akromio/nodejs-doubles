@@ -1,6 +1,6 @@
 use (
   alias://expected
-  {simulator} = ~
+  {simulator, method, fun, field} = ~
 )
 
 suite(__filename, proc()
@@ -8,7 +8,7 @@ suite(__filename, proc()
     test("when empty simulator, no response available and error must be raised", proc()
       # (1) act
       const (
-        p = simulator.fun([])
+        p = fun([])
         out = peval(p())
       )
 
@@ -20,7 +20,7 @@ suite(__filename, proc()
 
     test("when procedure simulator, the calls must return nil", proc()
       # (1) act
-      const p = simulator.fun()
+      const p = fun()
 
       # (2) assessment
       expected(p()).toBeNil()
@@ -29,7 +29,7 @@ suite(__filename, proc()
 
     test("when position-based simulator, position-based behavior must be used", proc()
       # (1) act
-      const p = simulator.fun([
+      const p = fun([
         {default = true, returns = "the default value"},
         {i = 0, returns = 111}
         {raises = Error("my error")}
@@ -47,7 +47,7 @@ suite(__filename, proc()
 
     test("when position-based simulator using the first item, position-based behavior must be used", proc()
       # (1) act
-      const p = simulator.fun([
+      const p = fun([
         {i = 0, returns = 111}
         {raises = Error("my error")}
         {returns = 222}
@@ -60,12 +60,24 @@ suite(__filename, proc()
       expected(p()).equalTo(222)
       expected(proc() p() end).toRaise(Error("No response available for simulator."))
     end)
+
+    test("when function sim must return other sim, this must be returned", proc()
+      # (1) act
+      const (
+        value = simulator(m = method.returns("xyz"))
+        sim = fun.returns(value)
+        out = sim().m()
+      )
+
+      # (2) assessment
+      expected(out).equalTo("xyz")
+    end)
   end)
 
   suite("args-based simulator", proc()
     test("when valid behavior, args-based behavior must be used", async proc()
       # (1) act
-      const p = simulator.fun([
+      const p = fun([
         {default = true, invokes = fn(...args) = args.join(" ") end},
         {args = [11, 22], returns = 1122}
         {args = [22, 11], raises = Error("my error")}
@@ -84,7 +96,7 @@ suite(__filename, proc()
 
     test("when not default call and needed in call, error must be raised", proc()
       # (1) act
-      const p = simulator.fun([
+      const p = fun([
         {args = ["promised you a miracle"], returns = "simple minds"}
       ])
 
@@ -97,15 +109,15 @@ suite(__filename, proc()
   suite("simulator base", proc()
     test("when operation not passed, error must be raised", proc()
       expected(proc()
-        simulator.fun([{}])
+        fun([{}])
       end).toRaise(TypeError("returns, raises, resolves or rejects must be set."))
     end)
 
     test("when simulating function with fields, fields can be accessed", proc()
       # (1) act
-      const m = simulator.fun(
+      const m = fun(
         {returns = "Simple Minds - Waterfront"}
-        {x = simulator.field({returns = "Simple Minds - Live in the City of Light"})}
+        {x = field({returns = "Simple Minds - Live in the City of Light"})}
       )
 
       # (2) assessment

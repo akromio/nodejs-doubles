@@ -55,35 +55,40 @@ simulator.fun = simulator.method = (behavior, members) => {
 simulator.fun.resolves = value => {
   {
     return createFunctionSimulator({
-      'resolves': value
+      'resolves': value,
+      'default': true
     });
   }
 };
 simulator.fun.rejects = value => {
   {
     return createFunctionSimulator({
-      'rejects': value
+      'rejects': value,
+      'default': true
     });
   }
 };
 simulator.fun.returns = value => {
   {
     return createFunctionSimulator({
-      'returns': value
+      'returns': value,
+      'default': true
     });
   }
 };
 simulator.fun.raises = value => {
   {
     return createFunctionSimulator({
-      'raises': value
+      'raises': value,
+      'default': true
     });
   }
 };
 simulator.fun.invokes = fun => {
   {
     return createFunctionSimulator({
-      'invokes': fun
+      'invokes': fun,
+      'default': true
     });
   }
 };
@@ -161,9 +166,12 @@ function createFunctionSimulator(def, members) {
       }
     } else if (_core.dogma.is(def, _core.map)) {
       behavior = PositionBasedBehavior();
-      behavior.addResponse(_core.dogma.clone(def, {
-        "default": true
-      }, {}, [], []));
+      if (!_core.dogma.includes(def, "default")) {
+        def = _core.dogma.clone(def, {
+          "default": true
+        }, {}, [], []);
+      }
+      behavior.addResponse(def);
     } else {
       behavior = PositionBasedBehavior();
       behavior.addResponse({

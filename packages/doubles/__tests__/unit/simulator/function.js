@@ -3,7 +3,10 @@
 var _core = require("@dogmalang/core");
 const expected = _core.dogma.use(require("@akromio/expected"));
 const {
-  simulator
+  simulator,
+  method,
+  fun,
+  field
 } = _core.dogma.use(require("../../.."));
 suite(__filename, () => {
   {
@@ -11,7 +14,7 @@ suite(__filename, () => {
       {
         test("when empty simulator, no response available and error must be raised", () => {
           {
-            const p = simulator.fun([]);
+            const p = fun([]);
             const out = _core.dogma.peval(() => {
               return p();
             });
@@ -20,14 +23,14 @@ suite(__filename, () => {
         });
         test("when procedure simulator, the calls must return nil", () => {
           {
-            const p = simulator.fun();
+            const p = fun();
             expected(p()).toBeNil();
             expected(p()).toBeNil();
           }
         });
         test("when position-based simulator, position-based behavior must be used", () => {
           {
-            const p = simulator.fun([{
+            const p = fun([{
               ["default"]: true,
               ["returns"]: "the default value"
             }, {
@@ -52,7 +55,7 @@ suite(__filename, () => {
         });
         test("when position-based simulator using the first item, position-based behavior must be used", () => {
           {
-            const p = simulator.fun([{
+            const p = fun([{
               ["i"]: 0,
               ["returns"]: 111
             }, {
@@ -75,13 +78,23 @@ suite(__filename, () => {
             }).toRaise(Error("No response available for simulator."));
           }
         });
+        test("when function sim must return other sim, this must be returned", () => {
+          {
+            const value = simulator({
+              'm': method.returns("xyz")
+            });
+            const sim = fun.returns(value);
+            const out = sim().m();
+            expected(out).equalTo("xyz");
+          }
+        });
       }
     });
     suite("args-based simulator", () => {
       {
         test("when valid behavior, args-based behavior must be used", async () => {
           {
-            const p = simulator.fun([{
+            const p = fun([{
               ["default"]: true,
               ["invokes"]: (...args) => {
                 {
@@ -115,7 +128,7 @@ suite(__filename, () => {
         });
         test("when not default call and needed in call, error must be raised", () => {
           {
-            const p = simulator.fun([{
+            const p = fun([{
               ["args"]: ["promised you a miracle"],
               ["returns"]: "simple minds"
             }]);
@@ -135,17 +148,17 @@ suite(__filename, () => {
           {
             expected(() => {
               {
-                simulator.fun([{}]);
+                fun([{}]);
               }
             }).toRaise(TypeError("returns, raises, resolves or rejects must be set."));
           }
         });
         test("when simulating function with fields, fields can be accessed", () => {
           {
-            const m = simulator.fun({
+            const m = fun({
               ["returns"]: "Simple Minds - Waterfront"
             }, {
-              ["x"]: simulator.field({
+              ["x"]: field({
                 ["returns"]: "Simple Minds - Live in the City of Light"
               })
             });
