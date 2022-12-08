@@ -1,0 +1,31 @@
+name: Feature request
+description: Suggest an idea for this project.
+title: "[feature] "
+
+body:
+  - type: input
+    id: package
+    attributes:
+      label: Package name
+      description: Name of the package
+      placeholder: ex. @owner/registry
+    validations:
+      required: false
+
+  - type: textarea
+    id: background
+    attributes:
+      label: Please, describe the feature.
+      description: What feature would you like to get added?
+      placeholder: Feature description
+    validations:
+      required: true
+  
+  - type: textarea
+    id: solving
+    attributes:
+      label:  Please, describe what problem solving.
+      description:  What problem is it solving?
+      placeholder: Description of the problem to resolve
+    validations:
+      required: true
