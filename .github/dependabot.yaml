@@ -1,0 +1,17 @@
+version: 2
+
+updates:
+  - package-ecosystem: npm
+    directory: /
+    schedule:
+      interval: weekly
+      day: sunday
+      time: "00:00"
+    pull-request-branch-name:
+      separator: /
+    labels:
+      - dependencies
+    commit-message:
+      prefix: depbot
+      prefix-development: depbot
+      include: scope
