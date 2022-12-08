@@ -1,0 +1,76 @@
+name: Bug report
+description: Create a bug report
+title: "[bug] "
+
+body:
+  - type: input
+    id: package
+    attributes:
+      label: Package name and version
+      description: Name and version of the package used
+      placeholder: ex. @owner/package 1.2.3
+    validations:
+      required: true
+  
+  - type: textarea
+    id: environment
+    attributes:
+      label: Environment
+      description: Please, provide info on your environment (Node.js, NPM, OS, etc.)
+      placeholder: Environment
+    validations:
+      required: true
+
+  - type: textarea
+    id: background
+    attributes:
+      label: Describe the bug
+      description: Please, provide the bug description.
+      placeholder: Description
+    validations:
+      required: true
+
+  - type: textarea
+    id: expected-behavior
+    attributes:
+      label: Expected behavior
+      description: Provide a description of the expected behavior/result.
+      placeholder: Expected behavior
+    validations:
+      required: true
+
+  - type: textarea
+    id: actual-behavior
+    attributes:
+      label: Actual behavior
+      description: Provide a description of the actual behavior/result observed/obtained.
+      placeholder: Actual behavior
+    validations:
+      required: true
+  
+  - type: textarea
+    id: backtrace
+    attributes:
+      label: Backtrace
+      description: Provide logs if possible as text and not screenshots
+      placeholder: Logs
+    validations:
+      required: false
+
+  - type: textarea
+    id: repro-steps
+    attributes:
+      label: Reproduction Steps
+      description: Please, include minimal steps to reproduce the issue if possible.
+      placeholder: Minimal reproduction
+    validations:
+      required: false
+
+  - type: textarea
+    id: additional-info
+    attributes:
+      label: Additional information
+      description: Add additional info considered of interest
+      placeholder: Something of your interest for us
+    validations:
+      required: false
