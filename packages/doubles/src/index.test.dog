@@ -1,16 +1,17 @@
 use (
   alias://expected
-  pkg = ~
+  index
 )
 
 suite(__filename, proc()
   test("when package imported, api must be exported", proc()
-    expected(pkg).toHave(
+    expected(index).toHave(
       "field"
       "fun"
       "method"
       "monitor"
       "simulator"
+      "sim"
     )
   end)
 end)

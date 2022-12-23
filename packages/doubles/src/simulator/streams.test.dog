@@ -1,0 +1,31 @@
+use (
+  alias://expected
+  {readable, duplex} = streams
+)
+
+suite(__filename, proc()
+  suite("readable", proc()
+    test("when data w/o interval, these must be pushed and readable", async proc()
+      # (1) act
+      const (
+        data = ["one", "two", "three"]
+        stream = readable({data})
+        out = []
+      )
+
+      await for each item in stream do
+        out.push(text(item))
+
+      # (2) assessment
+      expected(out).equalTo(data)
+    end)
+  end)
+  
+  suite("duplex", proc()
+    # (1) act
+    const out = duplex()
+
+    # (2) assessment
+    expected(out).toBeDuplexStream()
+  end)
+end)

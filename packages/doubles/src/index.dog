@@ -1,5 +1,6 @@
 use (
   simulator
+  sim = simulator
 )
 
 pub use (
@@ -11,6 +12,7 @@ const {constructor, fun, method, field} = simulator
 
 pub (
   constructor
+  sim
   simulator
   fun
   method

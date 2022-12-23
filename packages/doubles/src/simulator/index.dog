@@ -1,9 +1,6 @@
 use (
-  {Duplex} = dep://stream
-  Simulator
+  Simulator, streams, field, createMembers
   behavior/{Behavior, PositionBasedBehavior, ArgsBasedBehavior}
-  field
-  createMembers
 )
 
 /**
@@ -71,13 +68,7 @@ simulator.field = field
 /**
  * Creates a duplex stream simulator.
  */
-simulator.stream = {
-  duplex = fn()
-    return native(
-      "/* c8 ignore start */new Duplex({read() {}, write() {}})/* c8 ignore stop */"
-    )
-  end
-}
+simulator.stream = streams
 
 /**
  * Creates an object simulator, attending to the behavior [def]inition.

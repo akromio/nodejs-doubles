@@ -1,0 +1,52 @@
+use (
+  {Readable, Duplex} = dep://stream
+  {setInterval, clearInterval} = dep://timers
+)
+
+/**
+ * A readable stream double.
+ */
+struct ReadableStream: Readable
+  /**
+   * Data to produce by this stream
+   */
+  pub const data := []
+
+  /**
+   * Interval, in ms, for producing the data.
+   */
+  pub const interval := 1
+
+  @override
+  pub proc _construct(done)
+    # (1) configure stream
+    const (
+      {interval} = self
+      data = copy(self.data)
+      timer = setInterval(proc()
+        if len(data) > 0 then
+          self.push(data.shift())
+        else
+          clearInterval(timer)
+          self.push(nil)
+      end, interval)
+    )
+
+    # (2) notify stream configuration ended
+    done()
+  
+  @override
+  pub proc _read()
+    nop
+
+/**
+ * Creates and returns a productor stream for reading from it.
+ */
+pub fn readable(opts := {}) = ReadableStream(opts)
+
+/**
+ * Creates and returns a duplex stream.
+ */
+pub fn duplex() = native(
+  "/* c8 ignore start */new Duplex({read() {}, write() {}})/* c8 ignore stop */"
+)

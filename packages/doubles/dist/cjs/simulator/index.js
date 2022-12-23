@@ -1,15 +1,13 @@
 "use strict";
 
 var _core = require("@dogmalang/core");
-const {
-  Duplex
-} = _core.dogma.use(require("stream"));
 const Simulator = _core.dogma.use(require("./Simulator"));
+const streams = _core.dogma.use(require("./streams"));
+const field = _core.dogma.use(require("./field"));
+const createMembers = _core.dogma.use(require("./createMembers"));
 const Behavior = _core.dogma.use(require("./behavior/Behavior"));
 const PositionBasedBehavior = _core.dogma.use(require("./behavior/PositionBasedBehavior"));
 const ArgsBasedBehavior = _core.dogma.use(require("./behavior/ArgsBasedBehavior"));
-const field = _core.dogma.use(require("./field"));
-const createMembers = _core.dogma.use(require("./createMembers"));
 function simulator(...args) {
   let sim;
   {
@@ -97,17 +95,7 @@ simulator.constructor.returns = simulator.fun.returns;
 simulator.constructor.raises = simulator.fun.raises;
 simulator.constructor.invokes = simulator.fun.invokes;
 simulator.field = field;
-simulator.stream = {
-  ["duplex"]: () => {
-    {
-      return (/* c8 ignore start */new Duplex({
-          read() {},
-          write() {}
-        }) /* c8 ignore stop */
-      );
-    }
-  }
-};
+simulator.stream = streams;
 function createObjectSimulator(def) {
   /* c8 ignore next */_core.dogma.expect("def", def, _core.map);
   {
