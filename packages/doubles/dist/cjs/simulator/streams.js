@@ -5,9 +5,11 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.duplex = duplex;
 exports.readable = readable;
+exports.writable = writable;
 var _core = require("@dogmalang/core");
 const {
   Readable,
+  Writable,
   Duplex
 } = _core.dogma.use(require("stream"));
 const {
@@ -78,6 +80,14 @@ function readable(opts = {}) {
   /* c8 ignore next */if (opts != null) _core.dogma.expect("opts", opts, _core.map);
   {
     return ReadableStream(opts);
+  }
+}
+function writable() {
+  {
+    return (/* c8 ignore start */new Writable({
+        write() {}
+      }) /* c8 ignore stop */
+    );
   }
 }
 function duplex() {

@@ -1,5 +1,5 @@
 use (
-  {Readable, Duplex} = dep://stream
+  {Readable, Writable, Duplex} = dep://stream
   {setInterval, clearInterval} = dep://timers
 )
 
@@ -43,6 +43,13 @@ struct ReadableStream: Readable
  * Creates and returns a productor stream for reading from it.
  */
 pub fn readable(opts := {}) = ReadableStream(opts)
+
+/**
+ * Creates and returns a writable stream.
+ */
+pub fn writable() = native(
+  "/* c8 ignore start */new Writable({write() {}})/* c8 ignore stop */"
+)
 
 /**
  * Creates and returns a duplex stream.

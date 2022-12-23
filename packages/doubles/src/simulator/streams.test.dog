@@ -1,10 +1,11 @@
 use (
   alias://expected
-  {readable, duplex} = streams
+  {Readable, Writable} = dep://stream
+  {readable, writable, duplex} = streams
 )
 
 suite(__filename, proc()
-  suite("readable", proc()
+  suite("readable()", proc()
     test("when data w/o interval, these must be pushed and readable", async proc()
       # (1) act
       const (
@@ -17,15 +18,28 @@ suite(__filename, proc()
         out.push(text(item))
 
       # (2) assessment
+      expected(stream).toBe(Readable)
       expected(out).equalTo(data)
     end)
   end)
-  
-  suite("duplex", proc()
-    # (1) act
-    const out = duplex()
 
-    # (2) assessment
-    expected(out).toBeDuplexStream()
+  suite("writable()", proc()
+    test("when called, a dummy writable stream must be returned", proc()
+      # (1) act
+      const out = writable()
+
+      # (2) assessment
+      expected(out).toBe(Writable)
+    end)
+  end)
+  
+  suite("duplex()", proc()
+    test("when called, a dummy duplex stream must be returned", proc()
+      # (1) act
+      const out = duplex()
+
+      # (2) assessment
+      expected(out).toBeDuplexStream()
+    end)
   end)
 end)
