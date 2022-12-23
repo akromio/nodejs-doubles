@@ -5,6 +5,7 @@ extension:
   - js
 
 spec:
+  - "**/*.test.js"
   - __tests__/**/*.js
   
 ignore:
