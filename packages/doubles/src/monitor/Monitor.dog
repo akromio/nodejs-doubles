@@ -33,7 +33,7 @@ export struct Monitor: Double
    * - No member specified explicitly.
    * - The member is in the list of members
    */
-  pub fn hasToBeMonitorized(name: text) = len(members) == 0 or name in members
+  pub fn hasToBeMonitorized(name) = len(members) == 0 or name in members
 
   /**
    * Saves a call in the log.

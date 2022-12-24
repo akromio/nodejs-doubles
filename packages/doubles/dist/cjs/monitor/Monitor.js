@@ -53,7 +53,7 @@ Monitor.prototype.hasToBeMonitorized = function (name) {
     log,
     members
   } = self; /* c8 ignore next */
-  _core.dogma.expect("name", name, _core.text);
+  _core.dogma.expect("name", name);
   {
     return (0, _core.len)(members) == 0 || _core.dogma.includes(members, name);
   }
