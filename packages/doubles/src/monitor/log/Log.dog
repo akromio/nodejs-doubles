@@ -132,11 +132,20 @@ export struct Log
   pub fn getCall(i: num) = self.getEntryByType(Call, i)
 
   /**
-   * Returns the first call.
-   *
-   * This sugar is very useful when only one entry is possible.
+   * Alias for getCall(0).
+   * Recommended when only one entry is possible.
    */
   pub fn call = self.getCall(0)
+
+  /**
+   * Alias for getCall(0).
+   */
+  pub fn firstCall = self.getCall(0)
+
+  /**
+   * Alias for getCall(1).
+   */
+  pub fn secondCall = self.getCall(1)
 
   /**
    * Returns a field access from its [i]ndex.
