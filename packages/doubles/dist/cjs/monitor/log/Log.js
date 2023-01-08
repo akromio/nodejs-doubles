@@ -280,6 +280,30 @@ Object.defineProperty(Log.prototype, "call", {
     }
   }
 });
+Object.defineProperty(Log.prototype, "firstCall", {
+  enum: true,
+  get: function () {
+    const self = this;
+    const {
+      items
+    } = self;
+    {
+      return this.getCall(0);
+    }
+  }
+});
+Object.defineProperty(Log.prototype, "secondCall", {
+  enum: true,
+  get: function () {
+    const self = this;
+    const {
+      items
+    } = self;
+    {
+      return this.getCall(1);
+    }
+  }
+});
 Log.prototype.getAccess = function (i) {
   const self = this;
   const {

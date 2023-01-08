@@ -391,9 +391,20 @@ declare module "@akromio/doubles" {
     getCall(i: number): Call
 
     /**
-     * Sugar for getCall(0).
+     * Alias for getCall(0).
+     * Recommended when only one call performed.
      */
     call: Call
+
+    /**
+     * Alias for getCall(0).
+     */
+    firstCall: Call
+
+    /**
+     * Alias for getCall(1).
+     */
+    secondCall: Call
 
     /**
      * Returns a field access from its index.

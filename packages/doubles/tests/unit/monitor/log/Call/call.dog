@@ -15,7 +15,7 @@ suite(__filename, proc()
     monitor.clearAll()
   end)
 
-  test("when only one call, call and getCall(0) must return the same", proc()
+  test("when only one call, call, firstCall and getCall(0) must return the same", proc()
     # (1) act
     const (
       target = TestStruct()
@@ -34,6 +34,36 @@ suite(__filename, proc()
     
     const call = log.getCall(0)
     expected(log.call).sameAs(call).toBe("Call").toHave(
+      result = Result.returned
+      args = []
+    ).member("value").toBeNum()
+    expected(log.firstCall).sameAs(call).toBe("Call").toHave(
+      result = Result.returned
+      args = []
+    ).member("value").toBeNum()
+  end)
+
+  test("when secondCall, getCall(1) must return the same", proc()
+    # (1) act
+    const (
+      target = TestStruct()
+      p = monitor(target)
+    )
+
+    expected(p.returnNum()).toBeNum()
+    expected(p.returnNum()).toBeNum()
+
+    # (2) assessment
+    const log = monitor.log(p)
+    expected(log)\
+      .toHaveLen(4)\
+      .member("accesses").equalTo(2)\
+      .member("calls").equalTo(2)\
+      .member("returns").equalTo(4)
+    
+    const call = log.getCall(1)
+
+    expected(log.secondCall).sameAs(call).toBe("Call").toHave(
       result = Result.returned
       args = []
     ).member("value").toBeNum()

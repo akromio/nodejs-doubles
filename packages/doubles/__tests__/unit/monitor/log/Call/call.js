@@ -48,7 +48,7 @@ suite(__filename, () => {
         monitor.clearAll();
       }
     });
-    test("when only one call, call and getCall(0) must return the same", () => {
+    test("when only one call, call, firstCall and getCall(0) must return the same", () => {
       {
         const target = TestStruct();
         const p = monitor(target);
@@ -57,6 +57,25 @@ suite(__filename, () => {
         expected(log).toHaveLen(2).member("accesses").equalTo(1).member("calls").equalTo(1).member("returns").equalTo(2);
         const call = log.getCall(0);
         expected(log.call).sameAs(call).toBe("Call").toHave({
+          'result': Result.returned,
+          'args': []
+        }).member("value").toBeNum();
+        expected(log.firstCall).sameAs(call).toBe("Call").toHave({
+          'result': Result.returned,
+          'args': []
+        }).member("value").toBeNum();
+      }
+    });
+    test("when secondCall, getCall(1) must return the same", () => {
+      {
+        const target = TestStruct();
+        const p = monitor(target);
+        expected(p.returnNum()).toBeNum();
+        expected(p.returnNum()).toBeNum();
+        const log = monitor.log(p);
+        expected(log).toHaveLen(4).member("accesses").equalTo(2).member("calls").equalTo(2).member("returns").equalTo(4);
+        const call = log.getCall(1);
+        expected(log.secondCall).sameAs(call).toBe("Call").toHave({
           'result': Result.returned,
           'args': []
         }).member("value").toBeNum();
