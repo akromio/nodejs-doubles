@@ -90,6 +90,20 @@ simulator.fun.invokes = fun => {
     });
   }
 };
+simulator.fun.sleep = (delay, value) => {
+  /* c8 ignore next */_core.dogma.expect("delay", delay, [_core.text, _core.num]);
+  {
+    return createFunctionSimulator({
+      'invokes': async () => {
+        {
+          0, await (0, _core.sleep)(delay);
+          return value;
+        }
+      },
+      'default': true
+    });
+  }
+};
 simulator.constructor = simulator.fun;
 simulator.constructor.returns = simulator.fun.returns;
 simulator.constructor.raises = simulator.fun.raises;

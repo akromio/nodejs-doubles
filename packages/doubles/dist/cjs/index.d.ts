@@ -126,6 +126,11 @@ declare module "@akromio/doubles" {
      * Creates and returns a simulator to reject a given value.
      */
     function rejects(value?: any): (...args: any[]) => Promise<any>
+
+    /**
+     * Similar to resolves(), but resolving with a given delay.
+     */
+    function sleep(delay: string | number, value?: any): (...args: any[]) => Promise<any>
   }
 
   /**

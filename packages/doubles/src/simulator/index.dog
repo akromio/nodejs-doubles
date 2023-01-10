@@ -51,6 +51,14 @@ simulator.fun.rejects = fn(value?) = createFunctionSimulator(rejects = value, de
 simulator.fun.returns = fn(value?) = createFunctionSimulator(returns = value, default = true) end
 simulator.fun.raises = fn(value?) = createFunctionSimulator(raises = value, default = true) end
 simulator.fun.invokes = fn(fun?) = createFunctionSimulator(invokes = fun, default = true) end
+simulator.fun.sleep = fn(delay: (text | num), value?) =(createFunctionSimulator(
+  invokes = async fn()
+    await(sleep(delay))
+    return value
+  end
+
+  default = true
+))
 
 /**
  * Creates a constructor simulator from its [behaviour].
