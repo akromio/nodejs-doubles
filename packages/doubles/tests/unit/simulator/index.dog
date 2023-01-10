@@ -109,6 +109,19 @@ suite(__filename, proc()
       await(expected(out1)).toBeRejected().equalTo(error)
       await(expected(out2)).toBeRejected().equalTo(error)
     end)
+
+    test("when fun.sleep(), a delay is performed and the vlaue must be returned", async proc()
+      # (1) act
+      const (
+        delay = "100ms"
+        value = "the value"
+        f = fun.sleep(delay, value)
+        out = f()
+      )
+
+      # (2) assessment
+      await(expected(out)).toBeFulfilled().equalTo(value)
+    end)
   end)
 
   suite("stream", proc()

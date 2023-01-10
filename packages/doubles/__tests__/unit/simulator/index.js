@@ -102,6 +102,15 @@ suite(__filename, () => {
             (0, await expected(out2)).toBeRejected().equalTo(error);
           }
         });
+        test("when fun.sleep(), a delay is performed and the vlaue must be returned", async () => {
+          {
+            const delay = "100ms";
+            const value = "the value";
+            const f = fun.sleep(delay, value);
+            const out = f();
+            (0, await expected(out)).toBeFulfilled().equalTo(value);
+          }
+        });
       }
     });
     suite("stream", () => {
