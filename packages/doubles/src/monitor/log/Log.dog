@@ -148,6 +148,11 @@ export struct Log
   pub fn secondCall = self.getCall(1)
 
   /**
+   * Alias for getCall(2).
+   */
+  pub fn thirdCall = self.getCall(2)
+
+  /**
    * Returns a field access from its [i]ndex.
    */
   pub fn getAccess(i: num) = self.getEntryByType(Access, i)

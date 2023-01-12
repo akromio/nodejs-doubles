@@ -304,6 +304,18 @@ Object.defineProperty(Log.prototype, "secondCall", {
     }
   }
 });
+Object.defineProperty(Log.prototype, "thirdCall", {
+  enum: true,
+  get: function () {
+    const self = this;
+    const {
+      items
+    } = self;
+    {
+      return this.getCall(2);
+    }
+  }
+});
 Log.prototype.getAccess = function (i) {
   const self = this;
   const {

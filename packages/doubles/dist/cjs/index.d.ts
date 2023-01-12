@@ -412,6 +412,11 @@ declare module "@akromio/doubles" {
     secondCall: Call
 
     /**
+     * Alias for getCall(2).
+     */
+    thirdCall: Call
+
+    /**
      * Returns a field access from its index.
      *
      * @param i - The index/position to return.

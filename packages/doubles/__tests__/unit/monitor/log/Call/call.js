@@ -81,6 +81,22 @@ suite(__filename, () => {
         }).member("value").toBeNum();
       }
     });
+    test("when thirdCall, getCall(2) must return the same", () => {
+      {
+        const target = TestStruct();
+        const p = monitor(target);
+        expected(p.returnNum()).toBeNum();
+        expected(p.returnNum()).toBeNum();
+        expected(p.returnNum()).toBeNum();
+        const log = monitor.log(p);
+        expected(log).toHaveLen(6).member("accesses").equalTo(3).member("calls").equalTo(3).member("returns").equalTo(6);
+        const call = log.getCall(2);
+        expected(log.thirdCall).sameAs(call).toBe("Call").toHave({
+          'result': Result.returned,
+          'args': []
+        }).member("value").toBeNum();
+      }
+    });
     test("when not onlyCalls and no error raised, log must be updated and value returned", () => {
       {
         const target = TestStruct();
